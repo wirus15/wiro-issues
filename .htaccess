@@ -1,0 +1,23 @@
+allow from all
+
+Options +FollowSymLinks
+Options -Indexes
+IndexIgnore */*
+
+AddType image/jpeg jpg jpeg
+AddType image/png png
+AddType image/gif gif
+
+RewriteEngine On
+
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
+
+RewriteRule ^$ www/index.php [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^(.*)$ www/$1
+

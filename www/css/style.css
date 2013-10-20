@@ -1,0 +1,164 @@
+html,
+body {
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+form {
+    margin-bottom: 0px;
+}
+
+#page {
+    margin-top: 60px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0px auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+    height: 60px;
+}
+#footer {
+    background-color: #f5f5f5;
+}
+
+.container .credit {
+    margin: 20px 0;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+    #footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+.form-signin {
+    max-width: 300px;
+    margin: 100px auto 20px;
+}
+
+.form-signin fieldset {
+    margin-bottom: 20px;
+}
+
+.deleted {
+    color: #999;
+    text-decoration: line-through;
+}
+
+#user-grid-filter {
+    float: left;
+    margin-bottom: 5px;
+}
+
+.nav-list [class^="icon-"],
+.nav-list [class*=" icon-"] {
+    margin-right: 0px;
+    width: 18px;
+}
+
+img.image-select {
+    margin: 10px;
+    margin-bottom: 20px;
+}
+
+.input-append,
+.input-prepend {
+    margin-bottom: 10px;
+}
+
+.table-bordered .column-header {
+    background: #E9E9E9;
+    background: -moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FAFAFA), color-stop(100%, #E9E9E9)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* IE10+ */
+    background: linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#FAFAFA', endColorstr = '#E9E9E9');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')";
+    padding: 8px;
+}
+
+.grid-view .filters .filter-container {
+    padding: 0px;
+}
+
+.grid-view .filters input,
+.grid-view .filters select {
+    min-height: 30px;
+    box-sizing: border-box;
+}
+
+.grid-view table.items th:hover a:after {
+    background: none;
+}
+
+.grid-view table.items tr:first-child {
+
+    position: relative;
+
+    background: #E9E9E9;
+    background: -moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FAFAFA), color-stop(100%, #E9E9E9)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* Opera11.10+ */
+    background: -ms-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* IE10+ */
+    background: linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#FAFAFA', endColorstr = '#E9E9E9');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')";
+
+    border: 1px solid #D5D5D5;
+
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+
+    -webkit-background-clip: padding-box;
+}
+
+.ajax-loader {
+    display: none;
+}
+
+i[class^="icon-"] {
+    text-decoration: none;
+}
+
+.button-column i[class^="icon-"] {
+    color: #333;
+}
+
+.button-column i[class^="icon-"]:hover {
+    color: #666;
+}
+
+.grid-view table thead a {
+    text-decoration: none;
+}
+
+.grid-view table thead span.icon-sort-down {
+    margin-top: -5px;
+}

@@ -1,0 +1,71 @@
+{
+    "name": "yiinitializr/basic",
+    "description": "Basic project structure for Yii PHP framework",
+    "keywords": ["yii", "application", "web", "boilerplate", "template"],
+    "type": "yii-application",
+    "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "config": {
+        "vendor-dir": "app/lib/vendor"
+    },
+    "authors": [
+        {
+            "name": "Antonio Ramirez Cobos",
+            "email": "amigo.cobos@gmail.com",
+            "homepage": "http://www.ramirezcobos.com"
+        },
+        {
+            "name": "Matt Tabin",
+            "email": "amigo.tabin@gmail.com",
+            "homepage": "http://2amigos.us"
+        },
+        {
+            "name": "Maciej Krawczyk",
+            "email": "kontakt@maciejkrawczyk.pl",
+            "homepage": "http://www.maciejkrawczyk.pl"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/wirus15/yii"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/wirus15/yii-wiro"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/wirus15/PHPThumb"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/clevertech/YiiBooster"
+        },
+        {
+            "type": "composer",
+            "url": "http://packages.phundament.com"
+        }
+    ],
+    "require": {
+        "wirus15/yii-wiro": "dev-master",
+        "yiisoft/yii": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Yiinitializr": "app/lib/"
+        }
+    },
+    "scripts": {
+        "pre-install-cmd": "Yiinitializr\\Composer\\Callback::preInstall",
+        "post-install-cmd": "Yiinitializr\\Composer\\Callback::postInstall",
+        "pre-update-cmd": "Yiinitializr\\Composer\\Callback::preUpdate",
+        "post-update-cmd": "Yiinitializr\\Composer\\Callback::postUpdate",
+        "post-package-install": [
+            "Yiinitializr\\Composer\\Callback::postPackageInstall"
+        ],
+        "post-package-update": [
+            "Yiinitializr\\Composer\\Callback::postPackageUpdate"
+        ]
+    }
+}
