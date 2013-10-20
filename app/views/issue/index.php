@@ -8,11 +8,6 @@ $this->breadcrumbs = array('Issues');
 
 <fieldset>
     <legend>Issues</legend>
-
-    <p>
-        <?= TbHtml::linkButton('Create issue', array('url' => array('create'), 'color' => TbHtml::BUTTON_COLOR_PRIMARY, 'icon' => 'icon-plus icon-white')); ?>
-    </p>
-
     <?php $this->widget('bootstrap.widgets.TbTabs', array(
         'id' => 'issue-tabs',
         'type' => 'tabs',
@@ -31,7 +26,7 @@ $this->breadcrumbs = array('Issues');
             array(
                 'label' => 'Features',
                 'items' => array(
-                    array('label' => 'All', 'url' => array('index')),
+                    array('label' => 'All', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE)),
                     array('label' => 'Opened', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE, 'Issue[status]' => Issue::STATUS_OPENED)),
                     array('label' => 'Created by me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE, 'Issue[authorId]' => Yii::app()->user->id)),
                     array('label' => 'Assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE, 'Issue[assignedTo]' => Yii::app()->user->id)),
@@ -41,7 +36,7 @@ $this->breadcrumbs = array('Issues');
             array(
                 'label' => 'Bugs',
                 'items' => array(
-                    array('label' => 'All', 'url' => array('index')),
+                    array('label' => 'All', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG)),
                     array('label' => 'Opened', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG, 'Issue[status]' => Issue::STATUS_OPENED)),
                     array('label' => 'Created by me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG, 'Issue[authorId]' => Yii::app()->user->id)),
                     array('label' => 'Assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG, 'Issue[assignedTo]' => Yii::app()->user->id)),
@@ -51,7 +46,7 @@ $this->breadcrumbs = array('Issues');
             array(
                 'label' => 'Enhancements',
                 'items' => array(
-                    array('label' => 'All', 'url' => array('index')),
+                    array('label' => 'All', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT)),
                     array('label' => 'Opened', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT, 'Issue[status]' => Issue::STATUS_OPENED)),
                     array('label' => 'Created by me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT, 'Issue[authorId]' => Yii::app()->user->id)),
                     array('label' => 'Assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT, 'Issue[assignedTo]' => Yii::app()->user->id)),
@@ -60,6 +55,10 @@ $this->breadcrumbs = array('Issues');
             ),
         ),
     )); ?>
+    
+    <p>
+        <?= TbHtml::linkButton('Create issue', array('url' => array('create'), 'color' => TbHtml::BUTTON_COLOR_PRIMARY, 'icon' => 'icon-plus icon-white')); ?>
+    </p>
     
     <?php
     $this->widget('bootstrap.widgets.TbGridView', array(
@@ -77,7 +76,8 @@ $this->breadcrumbs = array('Issues');
             array(
                 'name' => 'type',
                 'filter' => $model->typeList,
-                'value' => '$data->typeName',
+                'value' => '$data->typeLabel',
+                'type' => 'raw',
             ),
             array(
                 'name' => 'authorId',
@@ -97,12 +97,14 @@ $this->breadcrumbs = array('Issues');
             array(
                 'name' => 'status',
                 'filter' => $model->statusList,
-                'value' => '$data->statusName',
+                'value' => '$data->statusLabel',
+                'type' => 'raw',
             ),
             array(
                 'name' => 'priority',
                 'filter' => $model->priorityList,
-                'value' => '$data->priorityName',
+                'value' => '$data->priorityLabel',
+                'type' => 'raw',
             ),
             array(
                 'name' => 'dateCreated',

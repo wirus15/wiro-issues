@@ -185,4 +185,41 @@ class Issue extends wiro\base\ActiveRecord
             $priority = $this->priority;
         return $this->priorityList[$priority];
     }
+    
+    public function getTypeLabel()
+    {
+        $icons = array(
+            Issue::TYPE_FEATURE => 'puzzle-piece',
+            Issue::TYPE_BUG => 'bug',
+            Issue::TYPE_ENHANCEMENT => 'lightbulb'
+        );
+        
+        $label = TbHtml::icon($icons[$this->type]);
+        $label .= '&nbsp;';
+        $label .= TbHtml::encode($this->typeName);
+        return $label;
+    }
+    
+    public function getPriorityLabel()
+    {
+        $colors = array(
+            Issue::PRIORITY_LOW => 'success',
+            Issue::PRIORITY_MEDIUM => 'warning',
+            Issue::PRIORITY_HIGH => 'danger',
+            Issue::PRIORITY_IMMEDIATE => 'danger',
+        );
+        return TbHtml::labelTb($this->priorityName, array('color' => $colors[$this->priority]));
+    }
+    
+    public function getStatusLabel()
+    {
+        $colors = array(
+            Issue::STATUS_NEW => 'inverse',
+            Issue::STATUS_CONFIRMED => 'info',
+            Issue::STATUS_OPENED => 'warning',
+            Issue::STATUS_HALTED => '',
+            Issue::STATUS_RESOLVED => 'success',
+        );
+        return TbHtml::labelTb($this->statusName, array('color' => $colors[$this->status]));
+    }
 }
