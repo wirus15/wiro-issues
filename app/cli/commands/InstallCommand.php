@@ -79,6 +79,7 @@ class InstallCommand extends CConsoleCommand
         }
         
         $config = array('components' => array('db' => $dbConfig));
+        Yii::app()->configure($config);
         file_put_contents($configFile, '<?php return '.var_export($config, true).';');
     }
 }

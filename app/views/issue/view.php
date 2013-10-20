@@ -1,0 +1,43 @@
+<?php
+/* @var $this IssueController */
+/* @var $model Issue */
+$this->breadcrumbs=array(
+    'Issues'=>array('index'),
+    "#{$model->issueId}: {$model->title}",
+);
+?>
+
+<fieldset>
+    <legend>Issue #<i><?= $model->issueId; ?>: <?= $model->title; ?></i></legend>
+    <p>
+    <?= TbHtml::buttonGroup(array(
+	array('label' => 'Update', 'url' => array('update', 'id'=>$model->issueId), 'icon' => 'pencil'),
+        array('label' => $model->statusName, 'url' => '#', 'icon' => 'flag', 'items' => array(
+            array('label' => 'New', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_NEW)),
+            array('label' => 'Confirmed', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_CONFIRMED)),
+            array('label' => 'Opened', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_OPENED)),
+            array('label' => 'Halted', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_HALTED)),
+            array('label' => 'Resolved', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_RESOLVED)),
+        )),
+        array('label' => 'Delete', 'confirm' => 'Are you sure you want to delete this issue?', 'submit' => array('delete', 'id'=>$model->issueId), 'color' => TbHtml::BUTTON_COLOR_DANGER, 'icon' => 'trash'),
+    )); ?>
+        &nbsp;&nbsp;
+    <?= TbHtml::linkButton('Issue list', array('url' => array('index'), 'icon' => 'tasks')); ?>
+    </p>
+    
+<?php $this->widget('bootstrap.widgets.TbDetailView', array(
+	'data'=>$model,
+	'attributes'=>array(
+		'issueId',
+		'author.username:text:Author',
+		'category.categoryName:text:Category',
+		'typeName:text:Type',
+		'title',
+		'description:html',
+		'assignee.username:text:Assigned to',
+		'statusName:text:Status',
+                'priorityName:text:Priority',
+		'dateCreated',
+		'dateModified',
+	),
+)); ?>

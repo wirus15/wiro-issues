@@ -11,7 +11,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
  */
 return array(
-    'name' => '{APPLICATION_NAME}',
+    'name' => 'Issues',
     'basePath' => realpath(__DIR__ . '/..'),
     'aliases' => array(
         'vendor' => 'application.lib.vendor',
@@ -92,7 +92,7 @@ return array(
         ),
     ),
     'params' => array(
-        'adminEmail' => '{ADMIN_EMAIL}',
+        'adminEmail' => 'kontakt@maciejkrawczyk.pl',
         'php.defaultCharset' => 'utf-8',
         'php.timezone' => 'UTC',
     )
