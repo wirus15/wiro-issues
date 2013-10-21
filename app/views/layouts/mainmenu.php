@@ -25,5 +25,11 @@ return array(
         'visible' => Yii::app()->user->checkAccess('admin'),
         'icon' => 'group',
     ),
+    array(
+        'label' => 'My profile',
+        'url' => array('/user/user/view'),
+        'visible' => !Yii::app()->user->isGuest,
+        'icon' => 'user',
+    ),
     
 );

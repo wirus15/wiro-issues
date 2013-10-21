@@ -21,6 +21,7 @@ return array(
         'bootstrap',
         'config',
     ),
+    'defaultController' => 'issue',
     'components' => array(
         'bootstrap' => array(
             'class' => 'bootstrap.components.Bootstrap',
@@ -63,7 +64,7 @@ return array(
     'modules' => array(
         'user' => array(
             'class' => 'wiro\modules\users\UserModule',
-            //'allowRegistration' => true,
+            'allowRegistration' => false,
             //'accountActivation' => wiro\modules\users\UserModule::USER_ACTIVATION,
             //'defaultController' => 'user',
         ),

@@ -16,11 +16,6 @@ return array(
             'ipFilters' => array('127.0.0.1', '::1'),
         ),
     ),
-    'components' => array(
-        'mail' => array(
-            'dryRun' => true,
-        ),
-    ),
     'params' => array(
         'yii.handleErrors' => true,
         'yii.debug' => true,

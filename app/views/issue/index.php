@@ -1,8 +1,9 @@
 <?php
-
-use wiro\modules\users\models\User;
 /* @var $this CategoryController */
 /* @var $model Category */
+
+use wiro\modules\users\models\User;
+
 $this->breadcrumbs = array('Issues');
 ?>
 
@@ -15,50 +16,45 @@ $this->breadcrumbs = array('Issues');
             array(
                 'label' => 'Issues',
                 'active' => true,
-                'items' => array(
-                    array('label' => 'All', 'url' => array('index'), 'active'=>true),
-                    array('label' => 'Opened', 'url' => array('index', 'Issue[status]' => Issue::STATUS_OPENED)),
-                    array('label' => 'Created by me', 'url' => array('index', 'Issue[authorId]' => Yii::app()->user->id)),
-                    array('label' => 'Assigned to me', 'url' => array('index', 'Issue[assignedTo]' => Yii::app()->user->id)),
-                    array('label' => 'Opened, assigned to me', 'url' => array('index', 'Issue[assignedTo]' => Yii::app()->user->id, 'Issue[status]' => Issue::STATUS_OPENED)),
-                ),
+                'url' => array('index'),
             ),
             array(
                 'label' => 'Features',
-                'items' => array(
-                    array('label' => 'All', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE)),
-                    array('label' => 'Opened', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE, 'Issue[status]' => Issue::STATUS_OPENED)),
-                    array('label' => 'Created by me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE, 'Issue[authorId]' => Yii::app()->user->id)),
-                    array('label' => 'Assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE, 'Issue[assignedTo]' => Yii::app()->user->id)),
-                    array('label' => 'Opened, assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE, 'Issue[assignedTo]' => Yii::app()->user->id, 'Issue[status]' => Issue::STATUS_OPENED)),
-                ),
+                'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE),
             ),
             array(
                 'label' => 'Bugs',
-                'items' => array(
-                    array('label' => 'All', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG)),
-                    array('label' => 'Opened', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG, 'Issue[status]' => Issue::STATUS_OPENED)),
-                    array('label' => 'Created by me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG, 'Issue[authorId]' => Yii::app()->user->id)),
-                    array('label' => 'Assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG, 'Issue[assignedTo]' => Yii::app()->user->id)),
-                    array('label' => 'Opened, assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG, 'Issue[assignedTo]' => Yii::app()->user->id, 'Issue[status]' => Issue::STATUS_OPENED)),
-                ),
+                'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG),
             ),
             array(
                 'label' => 'Enhancements',
-                'items' => array(
-                    array('label' => 'All', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT)),
-                    array('label' => 'Opened', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT, 'Issue[status]' => Issue::STATUS_OPENED)),
-                    array('label' => 'Created by me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT, 'Issue[authorId]' => Yii::app()->user->id)),
-                    array('label' => 'Assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT, 'Issue[assignedTo]' => Yii::app()->user->id)),
-                    array('label' => 'Opened, assigned to me', 'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT, 'Issue[assignedTo]' => Yii::app()->user->id, 'Issue[status]' => Issue::STATUS_OPENED)),
-                ),
+                'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT),
             ),
         ),
     )); ?>
     
-    <p>
-        <?= TbHtml::linkButton('Create issue', array('url' => array('create'), 'color' => TbHtml::BUTTON_COLOR_PRIMARY, 'icon' => 'icon-plus icon-white')); ?>
-    </p>
+    <div style="overflow: auto">
+        <div class="pull-left">
+            <?= TbHtml::linkButton('Create new issue', array(
+                'url' => array('create'), 
+                'color'=>'primary', 
+                'icon'=>'plus',
+            )); ?>
+        </div>
+        <div class="pull-right">
+            <?= TbHtml::buttonGroup(array(
+                array('label' => 'All', 'class'=>'active'),
+                array('label' => 'Assigned to me', 'htmlOptions' => array('data-filter' => 'assignedtome')),
+                array('label' => 'Created by me', 'htmlOptions' => array('data-filter' => 'createdbyme')),
+                array('label' => 'Unassigned', 'htmlOptions' => array('data-filter' => 'unassigned')),
+            ), array('toggle' => 'radio', 'class'=>'additional-filters')); ?>
+
+            <?= TbHtml::buttonGroup(array(
+                array('label' => 'Active', 'class'=>'active', 'htmlOptions' => array('data-filter'=>'active')),
+                array('label' => 'Inactive', 'htmlOptions' => array('data-filter'=>'inactive')),
+            ), array('toggle' => 'checkbox', 'class'=>'additional-filters')); ?>
+        </div>
+    </div>
     
     <?php
     $this->widget('bootstrap.widgets.TbGridView', array(
@@ -67,17 +63,25 @@ $this->breadcrumbs = array('Issues');
         'dataProvider' => $model->search(),
         'filter' => $model,
         'template' => "<div class=\"pull-right\">{summary}</div>{items}\n{pager}",
+        'selectionChanged' => 'function(gridId) {
+            var selectedId = $.fn.yiiGridView.getSelection(gridId); 
+            if(selectedId) {
+                var url = "'.$this->createUrl('view', array('id'=>'__id__')).'";
+                location.href = url.replace("__id__", selectedId);
+            }
+        }',
         'columns' => array(
             array(
                 'name' => 'issueId',
-                'headerHtmlOptions' => array('width'=>50),
+                'headerHtmlOptions' => array('width'=>30),
+                'value' => '"#{$data->issueId}"',
             ),
             'title',
             array(
                 'name' => 'type',
                 'filter' => $model->typeList,
                 'value' => '$data->typeLabel',
-                'type' => 'raw',
+                'type' => 'html',
             ),
             array(
                 'name' => 'authorId',
@@ -98,13 +102,13 @@ $this->breadcrumbs = array('Issues');
                 'name' => 'status',
                 'filter' => $model->statusList,
                 'value' => '$data->statusLabel',
-                'type' => 'raw',
+                'type' => 'html',
             ),
             array(
                 'name' => 'priority',
                 'filter' => $model->priorityList,
                 'value' => '$data->priorityLabel',
-                'type' => 'raw',
+                'type' => 'html',
             ),
             array(
                 'name' => 'dateCreated',
@@ -120,11 +124,30 @@ $this->breadcrumbs = array('Issues');
 </fieldset>
 
 <script type="text/javascript">
-$('#issue-tabs ul.dropdown-menu a').on('click', function(e) {
-    e.preventDefault();
-    var url = $(this).attr('href');
-    $('#issue-grid').yiiGridView('update', { url: url });
-    $('#issue-tabs li').removeClass('active');
-    $(this).parentsUntil('#issue-tabs', 'li').addClass('active');
-});  
+$(document).ready(function() {
+    $('#issue-tabs a').on('click', function(e) {
+        var url = $(this).attr('href');
+        var filters = [];
+        $('.additional-filters a.btn.active').each(function(index, item) {
+            filters.push($(item).attr('data-filter'));
+        });
+
+        jQuery('#issue-grid').yiiGridView('update', { 
+            url: url, 
+            data: {
+                additionalFilters: filters
+            }
+        });
+        $('#issue-tabs li').removeClass('active');
+        $(this).parents('li').addClass('active');
+        return false;
+    });
+    
+    $('.additional-filters a').on('click', function(e) {
+        $(this).parents('div[data-toggle="buttons-radio"]').find('a.active').removeClass('active');
+        $(this).toggleClass('active');
+        $('#issue-tabs li.active a').click();
+        return false;
+    });
+});
 </script>

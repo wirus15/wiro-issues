@@ -12,6 +12,7 @@
  * @property string $description
  * @property integer $assignedTo
  * @property integer $status
+ * @property integer $priority
  * @property string $dateCreated
  * @property string $dateModified
  */
@@ -22,6 +23,7 @@ class Issue extends wiro\base\ActiveRecord
     const STATUS_OPENED = 3;
     const STATUS_HALTED = 5;
     const STATUS_RESOLVED = 6;
+    const STATUS_REJECTED = 7;
     
     const TYPE_FEATURE = 1;
     const TYPE_BUG = 2;
@@ -112,15 +114,47 @@ class Issue extends wiro\base\ActiveRecord
     public function search()
     {
         $criteria = new CDbCriteria;
+        
+        $filters = Yii::app()->request->getQuery('additionalFilters', array());
+        
+        if(in_array('assignedtome', $filters))
+            $this -> assignedTo = Yii::app()->user->id;
+        if(in_array('createdbyme', $filters))
+            $this -> authorId = Yii::app()->user->id;
+        
         $criteria->compare('issueId', $this->issueId);
         $criteria->compare('authorId', $this->authorId);
         $criteria->compare('categoryId', $this->categoryId);
+        $criteria->compare('priority', $this->priority);
         $criteria->compare('type', $this->type);
         $criteria->compare('title', $this->title, true);
         $criteria->compare('assignedTo', $this->assignedTo);
         $criteria->compare('status', $this->status);
+
+        if(in_array('unassigned', $filters))
+            $criteria->addCondition('t.assignedTo is null');
+        
+        if(in_array('active', $filters) || in_array('inactive', $filters)) {
+            $status = array();
+            if(in_array('active', $filters))
+                array_push($status, 
+                    Issue::STATUS_NEW,
+                    Issue::STATUS_CONFIRMED,
+                    Issue::STATUS_OPENED,
+                    Issue::STATUS_HALTED);
+            if(in_array('inactive', $filters))
+                array_push ($status, 
+                    Issue::STATUS_RESOLVED, 
+                    Issue::STATUS_REJECTED);
+
+            $criteria->addInCondition('status', $status);
+        }
+        
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
+            'sort' => array(
+                'defaultOrder' => 'priority desc, dateCreated asc',
+            ),
         ));
     }
 
@@ -143,6 +177,7 @@ class Issue extends wiro\base\ActiveRecord
             self::STATUS_OPENED => 'Opened',
             self::STATUS_HALTED => 'Halted',
             self::STATUS_RESOLVED => 'Resolved',
+            self::STATUS_REJECTED => 'Rejected',
         );
     }
     
@@ -205,8 +240,8 @@ class Issue extends wiro\base\ActiveRecord
         $colors = array(
             Issue::PRIORITY_LOW => 'success',
             Issue::PRIORITY_MEDIUM => 'warning',
-            Issue::PRIORITY_HIGH => 'danger',
-            Issue::PRIORITY_IMMEDIATE => 'danger',
+            Issue::PRIORITY_HIGH => 'important',
+            Issue::PRIORITY_IMMEDIATE => 'very-important',
         );
         return TbHtml::labelTb($this->priorityName, array('color' => $colors[$this->priority]));
     }
@@ -214,11 +249,12 @@ class Issue extends wiro\base\ActiveRecord
     public function getStatusLabel()
     {
         $colors = array(
-            Issue::STATUS_NEW => 'inverse',
+            Issue::STATUS_NEW => 'info',
             Issue::STATUS_CONFIRMED => 'info',
             Issue::STATUS_OPENED => 'warning',
             Issue::STATUS_HALTED => '',
             Issue::STATUS_RESOLVED => 'success',
+            Issue::STATUS_REJECTED => 'inverse',
         );
         return TbHtml::labelTb($this->statusName, array('color' => $colors[$this->status]));
     }

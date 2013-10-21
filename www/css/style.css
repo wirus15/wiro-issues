@@ -162,3 +162,35 @@ i[class^="icon-"] {
 .grid-view table thead span.icon-sort-down {
     margin-top: -5px;
 }
+
+#issue-grid tbody tr:hover td {
+    background-color: #eee;
+}
+
+#issue-grid tbody tr {
+    cursor: pointer;
+}
+
+.label-very-important,
+.badge-very-important {
+    background-color: #CA0603;
+}
+
+.label-very-important,
+.badge-very-important {
+    -webkit-animation: pulse 0.5s infinite ease-in-out;
+    animation: pulse 0.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(2); }
+    10% { transform: scale(1); }
+}
+
+@-webkit-keyframes pulse {
+    0% { -webkit-transform: scale(1); }
+    50% { -webkit-transform: scale(1.1); }
+    100% { -webkit-transform: scale(1); }
+}
+

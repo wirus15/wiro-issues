@@ -22,9 +22,4 @@ class SiteController extends Controller
             'page' => 'wiro\modules\pages\actions\ViewAction',
         );
     }
-
-    public function actionIndex()
-    {
-        $this->render('index');
-    }
 }
