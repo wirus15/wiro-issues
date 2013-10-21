@@ -18,6 +18,7 @@
                     $this->widget('bootstrap.widgets.TbNavbar', array(
                         'brand' => Yii::app()->name,
                         'fixed' => 'top',
+                        'fluid' => true,
                         'items' => array(
                             array(
                                 'class' => 'bootstrap.widgets.TbMenu',
