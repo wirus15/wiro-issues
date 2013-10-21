@@ -34,7 +34,7 @@
                                         'icon' => 'signin',
                                     ),
                                     array(
-                                        'label' => 'Sign out',
+                                        'label' => 'Sign out ('.Yii::app()->user->name.')',
                                         'url' => array('/user/login/logout'),
                                         'visible' => !Yii::app()->user->isGuest,
                                         'icon' => 'off',
