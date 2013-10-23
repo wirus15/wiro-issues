@@ -12,23 +12,25 @@ $this->breadcrumbs = array('Issues');
     <?php $this->widget('bootstrap.widgets.TbTabs', array(
         'id' => 'issue-tabs',
         'type' => 'tabs',
+        'htmlOptions' => array(
+            'data-filter' => CHtml::activeId($model, 'type'),
+        ),
         'tabs' => array(
             array(
                 'label' => 'Issues',
                 'active' => true,
-                'url' => array('index'),
             ),
             array(
                 'label' => 'Features',
-                'url' => array('index', 'Issue[type]' => Issue::TYPE_FEATURE),
+                'linkOptions' => array('data-value' => Issue::TYPE_FEATURE),
             ),
             array(
                 'label' => 'Bugs',
-                'url' => array('index', 'Issue[type]' => Issue::TYPE_BUG),
+                'linkOptions' => array('data-value' => Issue::TYPE_BUG),
             ),
             array(
                 'label' => 'Enhancements',
-                'url' => array('index', 'Issue[type]' => Issue::TYPE_ENHANCEMENT),
+                'linkOptions' => array('data-value' => Issue::TYPE_ENHANCEMENT),
             ),
         ),
     )); ?>
@@ -41,20 +43,45 @@ $this->breadcrumbs = array('Issues');
                 'icon'=>'plus',
             )); ?>
         </div>
-        <div class="pull-right">
+        
+        <div id="filters" class="pull-right">
             <?= TbHtml::buttonGroup(array(
-                array('label' => 'All', 'class'=>'active'),
-                array('label' => 'Assigned to me', 'htmlOptions' => array('data-filter' => 'assignedtome')),
-                array('label' => 'Created by me', 'htmlOptions' => array('data-filter' => 'createdbyme')),
-                array('label' => 'Unassigned', 'htmlOptions' => array('data-filter' => 'unassigned')),
-            ), array('toggle' => 'radio', 'class'=>'additional-filters')); ?>
+                array('label' => 'All', 'class'=>'active', 'htmlOptions' => array(
+                    'data-filter' => 'Issue_assignedTo',
+                )),
+                array('label' => 'Assigned to me', 'htmlOptions' => array(
+                    'data-filter' => 'Issue_assignedTo',
+                    'data-value' => Yii::app()->user->id,
+                )),
+                array('label' => 'Created by me', 'htmlOptions' => array(
+                    'data-filter' => 'Issue_authorId',
+                    'data-value' => Yii::app()->user->id,
+                )),
+                array('label' => 'Unassigned', 'htmlOptions' => array(
+                    'data-filter' => 'Issue_assignedTo',
+                    'data-value' => 'unassigned',
+                )),
+            ), array(
+                'toggle' => 'radio', 
+                'data-clear' => 'Issue_assignedTo,Issue_authorId',
+            )); ?>
 
             <?= TbHtml::buttonGroup(array(
-                array('label' => 'Active', 'class'=>'active', 'htmlOptions' => array('data-filter'=>'active')),
-                array('label' => 'Inactive', 'htmlOptions' => array('data-filter'=>'inactive')),
-            ), array('toggle' => 'checkbox', 'class'=>'additional-filters')); ?>
+                array('label' => 'All'),
+                array('label' => 'Active', 'class'=>'active', 'htmlOptions' => array(
+                    'data-value'=>Issue::STATUS_SCOPE_ACTIVE,
+                )),
+                array('label' => 'Inactive', 'htmlOptions' => array(
+                    'data-value'=>Issue::STATUS_SCOPE_INACTIVE,
+                )),
+            ), array(
+                'toggle' => 'radio', 
+                'data-filter' => CHtml::activeId($model, 'statusScope'),
+            )); ?>
         </div>
     </div>
+   
+    <?= CHtml::activeHiddenField($model, 'statusScope'); ?>
     
     <?php
     $this->widget('bootstrap.widgets.TbGridView', array(
@@ -62,6 +89,7 @@ $this->breadcrumbs = array('Issues');
         'type' => array(TbHtml::GRID_TYPE_BORDERED, TbHtml::GRID_TYPE_STRIPED, TbHtml::GRID_TYPE_CONDENSED),
         'dataProvider' => $model->search(),
         'filter' => $model,
+        'filterSelector' => '{filter},#Issue_statusScope',
         'template' => "<div class=\"pull-right\">{summary}</div>{items}\n{pager}",
         'selectionChanged' => 'function(gridId) {
             var selectedId = $.fn.yiiGridView.getSelection(gridId); 
@@ -95,7 +123,10 @@ $this->breadcrumbs = array('Issues');
             ),
             array(
                 'name' => 'assignedTo',
-                'filter' => User::model()->listModels('username'),
+                'filter' => CMap::mergeArray(
+                        array('unassigned' => 'Unassigned'), 
+                        User::model()->listModels('username')
+                ),
                 'value' => '$data->assignee ? $data->assignee->username : null',
             ),
             array(
@@ -125,29 +156,26 @@ $this->breadcrumbs = array('Issues');
 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#issue-tabs a').on('click', function(e) {
-        var url = $(this).attr('href');
-        var filters = [];
-        $('.additional-filters a.btn.active').each(function(index, item) {
-            filters.push($(item).attr('data-filter'));
-        });
-
-        jQuery('#issue-grid').yiiGridView('update', { 
-            url: url, 
-            data: {
-                additionalFilters: filters
-            }
-        });
-        $('#issue-tabs li').removeClass('active');
-        $(this).parents('li').addClass('active');
-        return false;
-    });
-    
-    $('.additional-filters a').on('click', function(e) {
-        $(this).parents('div[data-toggle="buttons-radio"]').find('a.active').removeClass('active');
-        $(this).toggleClass('active');
-        $('#issue-tabs li.active a').click();
-        return false;
+    $('#issue-tabs a, #filters a').on('click', function(e) {
+        var filter = $(this).attr('data-filter') !== undefined
+             ? $(this).attr('data-filter')
+             : $(this).parents('[data-filter]').attr('data-filter');
+        var clear = $(this).attr('data-clear') !== undefined
+             ? $(this).attr('data-clear')
+             : $(this).parents('[data-clear]').attr('data-clear');
+        var value = $(this).attr('data-value');
+       
+        if(clear !== undefined) {
+            $.each(clear.split(','), function(i, c) {
+                $('#' + c).val('').prop('selected', false);
+            });
+        }
+        
+        if(filter !== undefined) {
+            $.each(filter.split(','), function(i, f) {
+               $('#' + f).val(value).prop('selected', true).change();
+            }); 
+        }
     });
 });
 </script>

@@ -26,6 +26,9 @@ class Issue extends wiro\base\ActiveRecord
     const STATUS_RESOLVED_CONFIRMED = 7;
     const STATUS_REJECTED = 8;
     
+    const STATUS_SCOPE_ACTIVE = 1;
+    const STATUS_SCOPE_INACTIVE = 2;
+    
     const TYPE_FEATURE = 1;
     const TYPE_BUG = 2;
     const TYPE_ENHANCEMENT = 3;
@@ -34,6 +37,8 @@ class Issue extends wiro\base\ActiveRecord
     const PRIORITY_MEDIUM = 2;
     const PRIORITY_HIGH = 3;
     const PRIORITY_IMMEDIATE = 4;
+    
+    public $statusScope = self::STATUS_SCOPE_ACTIVE;
     
     /**
      * @return string the associated database table name
@@ -52,7 +57,7 @@ class Issue extends wiro\base\ActiveRecord
             array('categoryId, type, title, status, priority', 'required'),
             array('title', 'length', 'max' => 60),
             array('categoryId, assignedTo, type, description, status', 'safe'),
-            array('issueId, authorId, categoryId, type, title, description, assignedTo, status, dateCreated, dateModified', 'safe', 'on' => 'search'),
+            array('issueId, authorId, categoryId, type, title, description, assignedTo, status, statusScope, dateCreated, dateModified', 'safe', 'on' => 'search'),
         );
     }
 
@@ -116,40 +121,23 @@ class Issue extends wiro\base\ActiveRecord
     {
         $criteria = new CDbCriteria;
         
-        $filters = Yii::app()->request->getQuery('additionalFilters', array());
-        
-        if(in_array('assignedtome', $filters))
-            $this -> assignedTo = Yii::app()->user->id;
-        if(in_array('createdbyme', $filters))
-            $this -> authorId = Yii::app()->user->id;
-        
         $criteria->compare('issueId', $this->issueId);
         $criteria->compare('authorId', $this->authorId);
         $criteria->compare('categoryId', $this->categoryId);
         $criteria->compare('priority', $this->priority);
         $criteria->compare('type', $this->type);
         $criteria->compare('title', $this->title, true);
-        $criteria->compare('assignedTo', $this->assignedTo);
         $criteria->compare('status', $this->status);
-
-        if(in_array('unassigned', $filters))
-            $criteria->addCondition('t.assignedTo is null');
         
-        if(in_array('active', $filters) || in_array('inactive', $filters)) {
-            $status = array();
-            if(in_array('active', $filters))
-                array_push($status, 
-                    Issue::STATUS_NEW,
-                    Issue::STATUS_CONFIRMED,
-                    Issue::STATUS_OPENED,
-                    Issue::STATUS_HALTED);
-            if(in_array('inactive', $filters))
-                array_push ($status, 
-                    Issue::STATUS_RESOLVED, 
-                    Issue::STATUS_REJECTED);
-
-            $criteria->addInCondition('status', $status);
-        }
+        if($this->assignedTo === 'unassigned') 
+            $criteria->addCondition('t.assignedTo is null');
+        else
+            $criteria->compare('assignedTo', $this->assignedTo);
+        
+        if($this->statusScope == self::STATUS_SCOPE_ACTIVE)
+            $criteria->compare('status', '<'.self::STATUS_RESOLVED_CONFIRMED);
+        if($this->statusScope == self::STATUS_SCOPE_INACTIVE)
+            $criteria->compare('status', '>'.self::STATUS_RESOLVED);
         
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
