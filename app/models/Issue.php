@@ -23,7 +23,8 @@ class Issue extends wiro\base\ActiveRecord
     const STATUS_OPENED = 3;
     const STATUS_HALTED = 5;
     const STATUS_RESOLVED = 6;
-    const STATUS_REJECTED = 7;
+    const STATUS_RESOLVED_CONFIRMED = 7;
+    const STATUS_REJECTED = 8;
     
     const TYPE_FEATURE = 1;
     const TYPE_BUG = 2;
@@ -177,6 +178,7 @@ class Issue extends wiro\base\ActiveRecord
             self::STATUS_OPENED => 'Opened',
             self::STATUS_HALTED => 'Halted',
             self::STATUS_RESOLVED => 'Resolved',
+            self::STATUS_RESOLVED_CONFIRMED => 'Resolved & Confirmed',
             self::STATUS_REJECTED => 'Rejected',
         );
     }
@@ -254,6 +256,7 @@ class Issue extends wiro\base\ActiveRecord
             Issue::STATUS_OPENED => 'warning',
             Issue::STATUS_HALTED => '',
             Issue::STATUS_RESOLVED => 'success',
+            Issue::STATUS_RESOLVED_CONFIRMED => 'success',
             Issue::STATUS_REJECTED => 'inverse',
         );
         return TbHtml::labelTb($this->statusName, array('color' => $colors[$this->status]));
