@@ -101,7 +101,7 @@ $this->breadcrumbs = array('Issues');
         'columns' => array(
             array(
                 'name' => 'issueId',
-                'headerHtmlOptions' => array('width'=>30),
+                'headerHtmlOptions' => array('width'=>40),
                 'value' => '"#{$data->issueId}"',
             ),
             'title',
