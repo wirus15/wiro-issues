@@ -18,6 +18,8 @@ $this->breadcrumbs=array(
             array('label' => 'Opened', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_OPENED)),
             array('label' => 'Halted', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_HALTED)),
             array('label' => 'Resolved', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_RESOLVED)),
+            array('label' => 'Resolved & Confirmed', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_RESOLVED_CONFIRMED)),
+            array('label' => 'Rejected', 'url' => array('status','id'=>$model->issueId,'status'=>Issue::STATUS_REJECTED)),
         )),
         array('label' => 'Delete', 'confirm' => 'Are you sure you want to delete this issue?', 'submit' => array('delete', 'id'=>$model->issueId), 'color' => TbHtml::BUTTON_COLOR_DANGER, 'icon' => 'trash'),
     )); ?>
