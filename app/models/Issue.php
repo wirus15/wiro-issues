@@ -70,6 +70,7 @@ class Issue extends wiro\base\ActiveRecord
             'category' => array(self::BELONGS_TO, 'Category', 'categoryId'),
             'author' => array(self::BELONGS_TO, 'wiro\modules\users\models\User', 'authorId'),
             'assignee' => array(self::BELONGS_TO, 'wiro\modules\users\models\User', 'assignedTo'),
+            'activities' => array(self::HAS_MANY, 'Activity', 'issueId'),
         );
     }
 
@@ -101,6 +102,9 @@ class Issue extends wiro\base\ActiveRecord
 		'createAttribute' => 'dateCreated',
 		'updateAttribute' => 'dateModified',
                 'timestampExpression' => 'Yii::app()->dateFormatter->format(\'yyyy-MM-dd HH:mm:ss\', time())',
+            ),
+            'activity' => array(
+                'class' => 'application.components.ActivityBehavior',
             ),
         );
     }
@@ -173,9 +177,7 @@ class Issue extends wiro\base\ActiveRecord
     
     public function getStatusName($status = null)
     {
-        if($status === null)
-            $status = $this->status;
-        return $this->statusList[$status];
+        return $this->statusList[$status ?: $this->status];
     }
     
     public function getTypeList()
@@ -189,9 +191,7 @@ class Issue extends wiro\base\ActiveRecord
     
     public function getTypeName($type = null)
     {
-        if($type === null)
-            $type = $this->type;
-        return $this->typeList[$type];
+        return $this->typeList[$type ?: $this->type];
     }
     
     public function getPriorityList()
@@ -206,12 +206,10 @@ class Issue extends wiro\base\ActiveRecord
     
     public function getPriorityName($priority = null)
     {
-        if($priority === null)
-            $priority = $this->priority;
-        return $this->priorityList[$priority];
+        return $this->priorityList[$priority ?: $this->priority];
     }
     
-    public function getTypeLabel()
+    public function getTypeLabel($type = null)
     {
         $icons = array(
             Issue::TYPE_FEATURE => 'puzzle-piece',
@@ -219,13 +217,14 @@ class Issue extends wiro\base\ActiveRecord
             Issue::TYPE_ENHANCEMENT => 'lightbulb'
         );
         
-        $label = TbHtml::icon($icons[$this->type]);
+        $type = $type ?: $this->type;
+        $label = TbHtml::icon($icons[$type]);
         $label .= '&nbsp;';
-        $label .= TbHtml::encode($this->typeName);
+        $label .= TbHtml::encode($this->getTypeName($type));
         return $label;
     }
     
-    public function getPriorityLabel()
+    public function getPriorityLabel($priority = null)
     {
         $colors = array(
             Issue::PRIORITY_LOW => 'success',
@@ -233,10 +232,12 @@ class Issue extends wiro\base\ActiveRecord
             Issue::PRIORITY_HIGH => 'important',
             Issue::PRIORITY_IMMEDIATE => 'very-important',
         );
-        return TbHtml::labelTb($this->priorityName, array('color' => $colors[$this->priority]));
+        
+        $priority = $priority ?: $this->priority;
+        return TbHtml::labelTb($this->getPriorityName($priority), array('color' => $colors[$priority]));
     }
     
-    public function getStatusLabel()
+    public function getStatusLabel($status = null)
     {
         $colors = array(
             Issue::STATUS_NEW => 'info',
@@ -247,6 +248,8 @@ class Issue extends wiro\base\ActiveRecord
             Issue::STATUS_RESOLVED_CONFIRMED => 'success',
             Issue::STATUS_REJECTED => 'inverse',
         );
-        return TbHtml::labelTb($this->statusName, array('color' => $colors[$this->status]));
+        
+        $status = $status ?: $this->status;
+        return TbHtml::labelTb($this->getStatusName($status), array('color' => $colors[$status]));
     }
 }

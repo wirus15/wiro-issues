@@ -7,7 +7,7 @@ $this->breadcrumbs=array(
 );
 ?>
 
-<fieldset>
+<fieldset id="issue-view">
     <legend>Issue #<i><?= $model->issueId; ?>: <?= $model->title; ?></i></legend>
     <p>
     <?= TbHtml::buttonGroup(array(
@@ -27,7 +27,7 @@ $this->breadcrumbs=array(
     <?= TbHtml::linkButton('Issue list', array('url' => array('index'), 'icon' => 'tasks')); ?>
     </p>
     
-<?php $this->widget('bootstrap.widgets.TbDetailView', array(
+    <?php $this->widget('bootstrap.widgets.TbDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
 		'issueId',
@@ -42,4 +42,19 @@ $this->breadcrumbs=array(
 		'dateCreated',
 		'dateModified',
 	),
-)); ?>
+    )); ?>
+    
+    <div class="activity-list">
+    <?php $this->renderPartial('/activity/list', array(
+        'activities' => $model->activities,
+    )); ?>
+        <div class="well well-small">
+            <p><?php $this->widget('bootstrap.widgets.TbRedactorJs', array(
+                'name' => 'lol',
+                )); ?></p>
+            <?= TbHtml::button('Comment', array('color'=>'primary')); ?>
+        </div>
+    </div>
+</fieldset>
+
+
