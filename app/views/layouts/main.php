@@ -70,5 +70,6 @@
                 </div>
             </div>
         </footer>
+        <script type="text/javascript" src="<?= Yii::app()->baseUrl; ?>/js/script.js"></script>
     </body>
 </html>

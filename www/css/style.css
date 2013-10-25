@@ -228,6 +228,15 @@ i[class^="icon-"] {
     font-style: italic;
 }
 
+#activity-list-view {
+    padding-top: 0px;
+}
+
+#activity-list-options {
+    overflow: auto; 
+    margin-bottom: 10px;
+}
+
 @media all and (min-width: 1200px) {
     #issue-view table.detail-view {
         float: left;

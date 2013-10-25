@@ -19,12 +19,12 @@
 class Issue extends wiro\base\ActiveRecord
 {
     const STATUS_NEW = 1;
-    const STATUS_CONFIRMED = 2;
-    const STATUS_OPENED = 3;
-    const STATUS_HALTED = 5;
-    const STATUS_RESOLVED = 6;
-    const STATUS_RESOLVED_CONFIRMED = 7;
-    const STATUS_REJECTED = 8;
+    const STATUS_OPENED = 2;
+    const STATUS_REOPENED = 3;
+    const STATUS_HALTED = 4;
+    const STATUS_RESOLVED = 5;
+    const STATUS_CONFIRMED = 6;
+    const STATUS_REJECTED = 7;
     
     const STATUS_SCOPE_ACTIVE = 1;
     const STATUS_SCOPE_INACTIVE = 2;
@@ -132,6 +132,7 @@ class Issue extends wiro\base\ActiveRecord
         $criteria->compare('type', $this->type);
         $criteria->compare('title', $this->title, true);
         $criteria->compare('status', $this->status);
+        $criteria->compare('dateCreated', $this->dateCreated);
         
         if($this->assignedTo === 'unassigned') 
             $criteria->addCondition('t.assignedTo is null');
@@ -139,7 +140,7 @@ class Issue extends wiro\base\ActiveRecord
             $criteria->compare('assignedTo', $this->assignedTo);
         
         if($this->statusScope == self::STATUS_SCOPE_ACTIVE)
-            $criteria->compare('status', '<'.self::STATUS_RESOLVED_CONFIRMED);
+            $criteria->compare('status', '<'.self::STATUS_CONFIRMED);
         if($this->statusScope == self::STATUS_SCOPE_INACTIVE)
             $criteria->compare('status', '>'.self::STATUS_RESOLVED);
         
@@ -166,11 +167,11 @@ class Issue extends wiro\base\ActiveRecord
     {
         return array(
             self::STATUS_NEW => 'New',
-            self::STATUS_CONFIRMED => 'Confirmed',
             self::STATUS_OPENED => 'Opened',
+            self::STATUS_REOPENED => 'Re-Opened',
             self::STATUS_HALTED => 'Halted',
             self::STATUS_RESOLVED => 'Resolved',
-            self::STATUS_RESOLVED_CONFIRMED => 'Resolved & Confirmed',
+            self::STATUS_CONFIRMED => 'Confirmed',
             self::STATUS_REJECTED => 'Rejected',
         );
     }
@@ -178,6 +179,22 @@ class Issue extends wiro\base\ActiveRecord
     public function getStatusName($status = null)
     {
         return $this->statusList[$status ?: $this->status];
+    }
+    
+    public function getStatusLabel($status = null)
+    {
+        $colors = array(
+            Issue::STATUS_NEW => 'info',
+            Issue::STATUS_OPENED => 'warning',
+            Issue::STATUS_REOPENED => 'warning',
+            Issue::STATUS_HALTED => '',
+            Issue::STATUS_RESOLVED => 'success',
+            Issue::STATUS_CONFIRMED => 'success',
+            Issue::STATUS_REJECTED => 'inverse',
+        );
+        
+        $status = $status ?: $this->status;
+        return TbHtml::labelTb($this->getStatusName($status), array('color' => $colors[$status]));
     }
     
     public function getTypeList()
@@ -192,21 +209,6 @@ class Issue extends wiro\base\ActiveRecord
     public function getTypeName($type = null)
     {
         return $this->typeList[$type ?: $this->type];
-    }
-    
-    public function getPriorityList()
-    {
-        return array(
-            self::PRIORITY_LOW => 'Low',
-            self::PRIORITY_MEDIUM => 'Medium',
-            self::PRIORITY_HIGH => 'High',
-            self::PRIORITY_IMMEDIATE => 'Immediate',
-        );
-    }
-    
-    public function getPriorityName($priority = null)
-    {
-        return $this->priorityList[$priority ?: $this->priority];
     }
     
     public function getTypeLabel($type = null)
@@ -224,6 +226,21 @@ class Issue extends wiro\base\ActiveRecord
         return $label;
     }
     
+    public function getPriorityList()
+    {
+        return array(
+            self::PRIORITY_LOW => 'Low',
+            self::PRIORITY_MEDIUM => 'Medium',
+            self::PRIORITY_HIGH => 'High',
+            self::PRIORITY_IMMEDIATE => 'Immediate',
+        );
+    }
+    
+    public function getPriorityName($priority = null)
+    {
+        return $this->priorityList[$priority ?: $this->priority];
+    }
+    
     public function getPriorityLabel($priority = null)
     {
         $colors = array(
@@ -235,21 +252,5 @@ class Issue extends wiro\base\ActiveRecord
         
         $priority = $priority ?: $this->priority;
         return TbHtml::labelTb($this->getPriorityName($priority), array('color' => $colors[$priority]));
-    }
-    
-    public function getStatusLabel($status = null)
-    {
-        $colors = array(
-            Issue::STATUS_NEW => 'info',
-            Issue::STATUS_CONFIRMED => 'info',
-            Issue::STATUS_OPENED => 'warning',
-            Issue::STATUS_HALTED => '',
-            Issue::STATUS_RESOLVED => 'success',
-            Issue::STATUS_RESOLVED_CONFIRMED => 'success',
-            Issue::STATUS_REJECTED => 'inverse',
-        );
-        
-        $status = $status ?: $this->status;
-        return TbHtml::labelTb($this->getStatusName($status), array('color' => $colors[$status]));
     }
 }

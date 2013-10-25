@@ -3,7 +3,6 @@
 /* @var $model Category */
 
 use wiro\modules\users\models\User;
-
 $this->breadcrumbs = array('Issues');
 ?>
 
@@ -44,41 +43,7 @@ $this->breadcrumbs = array('Issues');
             )); ?>
         </div>
         
-        <div id="filters" class="pull-right">
-            <?= TbHtml::buttonGroup(array(
-                array('label' => 'All', 'class'=>'active', 'htmlOptions' => array(
-                    'data-filter' => 'Issue_assignedTo',
-                )),
-                array('label' => 'Assigned to me', 'htmlOptions' => array(
-                    'data-filter' => 'Issue_assignedTo',
-                    'data-value' => Yii::app()->user->id,
-                )),
-                array('label' => 'Created by me', 'htmlOptions' => array(
-                    'data-filter' => 'Issue_authorId',
-                    'data-value' => Yii::app()->user->id,
-                )),
-                array('label' => 'Unassigned', 'htmlOptions' => array(
-                    'data-filter' => 'Issue_assignedTo',
-                    'data-value' => 'unassigned',
-                )),
-            ), array(
-                'toggle' => 'radio', 
-                'data-clear' => 'Issue_assignedTo,Issue_authorId',
-            )); ?>
-
-            <?= TbHtml::buttonGroup(array(
-                array('label' => 'All'),
-                array('label' => 'Active', 'class'=>'active', 'htmlOptions' => array(
-                    'data-value'=>Issue::STATUS_SCOPE_ACTIVE,
-                )),
-                array('label' => 'Inactive', 'htmlOptions' => array(
-                    'data-value'=>Issue::STATUS_SCOPE_INACTIVE,
-                )),
-            ), array(
-                'toggle' => 'radio', 
-                'data-filter' => CHtml::activeId($model, 'statusScope'),
-            )); ?>
-        </div>
+        <?php $this->renderPartial('_filters', array('model' => $model)); ?>
     </div>
    
     <?= CHtml::activeHiddenField($model, 'statusScope'); ?>
@@ -91,18 +56,12 @@ $this->breadcrumbs = array('Issues');
         'filter' => $model,
         'filterSelector' => '{filter},#Issue_statusScope',
         'template' => "<div class=\"pull-right\">{summary}</div>{items}\n{pager}",
-        'selectionChanged' => 'function(gridId) {
-            var selectedId = $.fn.yiiGridView.getSelection(gridId); 
-            if(selectedId) {
-                var url = "'.$this->createUrl('view', array('id'=>'__id__')).'";
-                location.href = url.replace("__id__", selectedId);
-            }
-        }',
         'columns' => array(
             array(
                 'name' => 'issueId',
                 'headerHtmlOptions' => array('width'=>40),
-                'value' => '"#{$data->issueId}"',
+                'type' => 'html',
+                'value' => 'CHtml::link("#{$data->issueId}", array("view", "id"=>$data->issueId))',
             ),
             'title',
             array(
@@ -141,10 +100,7 @@ $this->breadcrumbs = array('Issues');
                 'value' => '$data->priorityLabel',
                 'type' => 'html',
             ),
-            array(
-                'name' => 'dateCreated',
-                'filter' => false,
-            ),
+            'dateCreated',
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',
                 'template' => '{view} {update} {delete}',
@@ -153,29 +109,3 @@ $this->breadcrumbs = array('Issues');
     ));
     ?>
 </fieldset>
-
-<script type="text/javascript">
-$(document).ready(function() {
-    $('#issue-tabs a, #filters a').on('click', function(e) {
-        var filter = $(this).attr('data-filter') !== undefined
-             ? $(this).attr('data-filter')
-             : $(this).parents('[data-filter]').attr('data-filter');
-        var clear = $(this).attr('data-clear') !== undefined
-             ? $(this).attr('data-clear')
-             : $(this).parents('[data-clear]').attr('data-clear');
-        var value = $(this).attr('data-value');
-       
-        if(clear !== undefined) {
-            $.each(clear.split(','), function(i, c) {
-                $('#' + c).val('').prop('selected', false);
-            });
-        }
-        
-        if(filter !== undefined) {
-            $.each(filter.split(','), function(i, f) {
-               $('#' + f).val(value).prop('selected', true).change();
-            }); 
-        }
-    });
-});
-</script>

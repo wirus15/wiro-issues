@@ -38,6 +38,13 @@ class Activity extends wiro\base\ActiveRecord
         );
     }
     
+    public function rules()
+    {
+        return array(
+            array('issueId, activityType', 'safe', 'on' => 'search'),
+        );
+    }
+    
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -61,12 +68,6 @@ class Activity extends wiro\base\ActiveRecord
         );
     }
     
-    public function defaultScope()
-    {
-        return array(
-            //'order' => 'dateCreated desc',
-        );
-    }
     
     /**
      * Retrieves a list of models based on the current search/filter conditions.
@@ -82,12 +83,14 @@ class Activity extends wiro\base\ActiveRecord
      */
     public function search()
     {
-        return new CActiveDataProvider($this);
-    }
-    
-    public function getDateFormatted()
-    {
-        return $this->dateCreated;
+        $criteria = new CDbCriteria;
+        $criteria->compare('issueId', $this->issueId);
+        $criteria->compare('activityType', $this->activityType);
+ 
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+            //'pagination' => false,
+        ));
     }
     
     /**

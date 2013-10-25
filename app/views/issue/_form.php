@@ -35,7 +35,7 @@ use wiro\modules\users\models\User;
 
 	<?= TbHtml::formActions(array(
             TbHtml::submitButton('Save', array('color' => TbHtml::BUTTON_COLOR_PRIMARY)),
-            TbHtml::linkButton('Cancel', array('url' => array('index'))),
+            TbHtml::linkButton('Cancel', array('url' => 'javascript:history.go(-1)')),
         )); ?>
 
 <?php $this->endWidget(); ?>
