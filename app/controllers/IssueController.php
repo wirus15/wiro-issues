@@ -55,4 +55,13 @@ class IssueController extends wiro\base\Controller
         $model->save();
         $this->redirect(array('view','id'=>$id));
     }
+    
+    public function actionComment($id)
+    {
+        $model = $this->loadModel($id);
+        if(!empty($_POST['Activity']['activityData'])) {
+            $model->addComment($_POST['Activity']['activityData']);
+        }
+        $this->redirect(array('view', 'id'=>$id));
+    }
 }

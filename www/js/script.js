@@ -31,4 +31,17 @@ $(document).ready(function() {
        $.fn.yiiListView.update('activity-list-view', {url: $(this).attr('href')}); 
        e.preventDefault();
     });
+    
+    $('.add-comment form').on('submit', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var button = form.find('button[type="submit"]');
+        
+        button.prop('diabled', true).addClass('disabled');
+        $.post(form.attr('action'), form.serialize(), function() {
+            $.fn.yiiListView.update('activity-list-view');
+            button.prop('diabled', false).removeClass('disabled');
+            $('#Activity_activityData').redactor('set', '');
+        });
+    });
 });

@@ -65,9 +65,20 @@
     </div>
 
     <div class="well well-small add-comment">
-        <p><?php $this->widget('bootstrap.widgets.TbRedactorJs', array(
-            'name' => 'lol',
-        )); ?></p>
-        <?= TbHtml::button('Comment', array('color' => 'primary')); ?>
+        <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+            'type' => TbHtml::FORM_LAYOUT_VERTICAL,
+            'action' => array('comment', 'id'=>$model->issueId),
+        )); ?>
+        
+        <p>
+            <?php $this->widget('bootstrap.widgets.TbRedactorJs', array(
+                'model' => $model,
+                'attribute' => 'activityData',
+            )); ?>
+        </p>
+        
+        <?= TbHtml::submitButton('Comment', array('color'=>'primary')); ?>
+        
+        <?php $this->endWidget(); ?>
     </div>
 </div>

@@ -32,7 +32,12 @@ class ActivityBehavior extends CActiveRecordBehavior
         }
     }
     
-    private function createActivity($type)
+    public function addComment($text)
+    {
+        $this->createActivity(Activity::TYPE_COMMENT, $text);
+    }
+    
+    private function createActivity($type, $content=null)
     {
         $activity = new Activity();
         $activity->userId = Yii::app()->user->id;
@@ -51,6 +56,9 @@ class ActivityBehavior extends CActiveRecordBehavior
                     ? User::model()->findByPk($this->owner->assignedTo)->username
                     : '<span class="nobody">nobody</span>';
                 $activity->activityData = $username;
+                break;
+            case Activity::TYPE_COMMENT:
+                $activity->activityData = $content;
                 break;
         }
         

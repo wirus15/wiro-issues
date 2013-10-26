@@ -17,6 +17,10 @@ form {
     display: none;
 }
 
+.btn {
+    outline: none !important;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 
