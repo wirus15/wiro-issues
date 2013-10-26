@@ -61,8 +61,8 @@ return array(
             'class' => 'CLogRouter',
             'routes' => array(
                 array(
-                    'class' => 'CWebLogRoute',
-                    'levels' => 'trace, error, warning',
+                    'class' => 'CFileLogRoute',
+                    'levels' => 'error, warning',
                 ),
             ),
         ),
