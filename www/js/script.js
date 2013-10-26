@@ -27,11 +27,6 @@ $(document).ready(function() {
         return false;
     });
     
-    $('#activity-list-options a').on('click', function(e) {
-       $.fn.yiiListView.update('activity-list-view', {url: $(this).attr('href')}); 
-       e.preventDefault();
-    });
-    
     $('.add-comment form').on('submit', function(e) {
         e.preventDefault();
         var form = $(this);
@@ -43,5 +38,19 @@ $(document).ready(function() {
             button.prop('diabled', false).removeClass('disabled');
             $('#Activity_activityData').redactor('set', '');
         });
+    });
+    
+    $('body').on('click', '#activity-list-options a', function(e) {
+        e.preventDefault();
+        $.fn.yiiListView.update('activity-list-view', {url: $(this).attr('href')} );
+    });
+    
+    $('body').on('click', '#activity-list-view .items a.delete', function(e) {
+        e.preventDefault();
+        if(confirm('Are you sure you want to delete this comment?')) {
+            $.post($(this).attr('href'), function() {
+                $.fn.yiiListView.update('activity-list-view');
+            });
+        };
     });
 });

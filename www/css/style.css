@@ -204,30 +204,30 @@ i[class^="icon-"] {
     font-style: italic !important;
 }
 
-.activity-list .well {
+#activity-list .well {
     position: relative;
     margin-bottom: 8px;
 }
 
-.activity-list blockquote {
+#activity-list blockquote {
     margin: 8px 0px 0px 0px;
     padding-left: 10px;
 }
 
-.activity-list span.date {
+#activity-list span.date {
     display: block;
     font-weight: bold;
     font-size: 0.8em;
     color: #888;
 }
 
-.activity-list span.options {
+#activity-list span.options {
     position: absolute;
     top: 6px;
     right: 8px;
 }
 
-.activity-list span.nobody {
+#activity-list span.nobody {
     color: #888;
     font-style: italic;
 }
@@ -247,7 +247,7 @@ i[class^="icon-"] {
         width: 50%;
     }
     
-    #issue-view div.activity-list {
+    #activity-list {
         float: right;
         width: 49%;
     }

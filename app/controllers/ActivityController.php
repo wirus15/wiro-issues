@@ -19,6 +19,16 @@ class ActivityController extends wiro\base\Controller
     {
         return array(
             'index' => 'wiro\actions\IndexAction',
+            'delete' => array(
+                'class' => 'wiro\actions\DeleteAction',
+                'beforeDelete' => function($model) {
+                    if($model->userId != Yii::app()->user->id)
+                        throw new CHttpException('Cannot delete this activity.');
+                },
+                'redirectUrl' => function($model) {
+                    return array('/issue/view', 'id'=>$model->issueId);
+                },
+            ),
         );
     }
 

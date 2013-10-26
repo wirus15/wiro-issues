@@ -28,18 +28,17 @@ class ActivityFilter extends CWidget
      */
     public $url;
     
-    private $currentType;
-    
     public function init()
     {
-        if(isset($_GET['Activity']['activityType'])) 
-            $this->currentType = $_GET['Activity']['activityType'];
+        if(!isset($this->url))
+            $this->url = CMap::mergeArray(array($this->controller->route), $_GET);
     }
     
     public function run()
     {
         $buttons = array_map(array($this, 'button'), $this->buttons);
-        echo TbHtml::buttonGroup($buttons, $this->htmlOptions);
+        foreach($buttons as $btn)
+            echo TbHtml::linkButton($btn['label'], $btn);
     }
     
     public function button($params)
@@ -53,9 +52,9 @@ class ActivityFilter extends CWidget
         return CMap::mergeArray($params, array(
             'url' => array(
                 CHtml::activeName($this->model, 'activityType') => $type,
-                $this->dataProvider->sort->sortVar => $this->currentType,
+                CHtml::activeName($this->model, 'issueId') => $this->model->issueId,
             ),
-            'class' => $type==$this->currentType ? 'active' : '',
+            'class' => $type==$this->model->activityType ? 'btn-mini active' : 'btn-mini',
         ));
     }
 }

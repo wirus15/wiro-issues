@@ -1,6 +1,6 @@
 <?php
-/* @var $this CategoryController */
-/* @var $model Category */
+/* @var $this IssueController */
+/* @var $model Issue */
 
 use wiro\modules\users\models\User;
 $this->breadcrumbs = array('Issues');

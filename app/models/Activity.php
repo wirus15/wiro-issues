@@ -83,13 +83,16 @@ class Activity extends wiro\base\ActiveRecord
      */
     public function search()
     {
+        if(isset($_GET['Activity']))
+            $this->attributes = $_GET['Activity'];   
+        
         $criteria = new CDbCriteria;
-        $criteria->compare('issueId', $this->issueId);
-        $criteria->compare('activityType', $this->activityType);
+        $criteria->with = array('issue', 'user');
+        $criteria->compare('t.issueId', $this->issueId);
+        $criteria->compare('t.activityType', $this->activityType);
  
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
-            //'pagination' => false,
         ));
     }
     

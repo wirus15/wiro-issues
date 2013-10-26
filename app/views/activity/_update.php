@@ -1,2 +1,2 @@
-User <strong><?= $user->username; ?></strong> updated issue
-<?= TbHtml::link("#{$issue->issueId}: {$issue->title}", array('/issue/view', 'id' => $issue->issueId)); ?>.
+User <strong><?= $activity->user->username; ?></strong> updated issue
+<?= TbHtml::link("#{$activity->issueId}: {$activity->issue->title}", array('/issue/view', 'id' => $activity->issueId)); ?>.

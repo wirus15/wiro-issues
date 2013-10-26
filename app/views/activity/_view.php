@@ -14,8 +14,6 @@
     
     $this->renderPartial($views[$data->activityType], array(
         'activity' => $data,
-        'user' => $data->user,
-        'issue' => $data->issue,
     ));
     ?>
 </div>

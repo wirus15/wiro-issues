@@ -43,7 +43,7 @@ $this->breadcrumbs=array(
     
     
     <?php 
-    $activity = new Activity();
+    $activity = new Activity('search');
     $activity->issueId = $model->issueId;
     $this->renderPartial('/activity/index', array(
         'model' => $activity,
