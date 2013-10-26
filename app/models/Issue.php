@@ -39,6 +39,7 @@ class Issue extends wiro\base\ActiveRecord
     const PRIORITY_IMMEDIATE = 4;
     
     public $statusScope = self::STATUS_SCOPE_ACTIVE;
+    public $watchedScope = false;
     
     /**
      * @return string the associated database table name
@@ -57,7 +58,7 @@ class Issue extends wiro\base\ActiveRecord
             array('categoryId, type, title, status, priority', 'required'),
             array('title', 'length', 'max' => 60),
             array('categoryId, assignedTo, type, description, status', 'safe'),
-            array('issueId, authorId, categoryId, type, title, description, assignedTo, status, statusScope, dateCreated, dateModified', 'safe', 'on' => 'search'),
+            array('issueId, authorId, categoryId, type, title, description, assignedTo, status, statusScope, watchedScope, dateCreated, dateModified', 'safe', 'on' => 'search'),
         );
     }
 
@@ -107,6 +108,28 @@ class Issue extends wiro\base\ActiveRecord
             'activity' => array(
                 'class' => 'application.components.ActivityBehavior',
             ),
+            'issue-attributes' => array(
+                'class' => 'application.components.IssueAttributesBehavior',
+            ),
+        );
+    }
+    
+    public function scopes() 
+    {
+        return array(
+            'active' => array(
+                'condition' => 'status<:confirmed',
+                'params' => array(':confirmed' => self::STATUS_CONFIRMED),
+            ),
+            'inactive' => array(
+                'condition' => 'status>=:confirmed',
+                'params' => array(':confirmed' => self::STATUS_CONFIRMED),
+            ),
+            'watched' => array(
+                'join' => 'left join {{watches}} w on t.issueId=w.issueId',
+                'condition' => 'w.userId=:user',
+                'params' => array(':user' => Yii::app()->user->id),
+            ),
         );
     }
 
@@ -141,9 +164,11 @@ class Issue extends wiro\base\ActiveRecord
             $criteria->compare('assignedTo', $this->assignedTo);
         
         if($this->statusScope == self::STATUS_SCOPE_ACTIVE)
-            $criteria->compare('status', '<'.self::STATUS_CONFIRMED);
+            $criteria->scopes[] = 'active';
         if($this->statusScope == self::STATUS_SCOPE_INACTIVE)
-            $criteria->compare('status', '>'.self::STATUS_RESOLVED);
+            $criteria->scopes[] = 'inactive';
+        if($this->watchedScope)
+            $criteria->scopes[] = 'watched';
         
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
@@ -162,96 +187,5 @@ class Issue extends wiro\base\ActiveRecord
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
-    }
-
-    public function getStatusList()
-    {
-        return array(
-            self::STATUS_NEW => 'New',
-            self::STATUS_OPENED => 'Opened',
-            self::STATUS_REOPENED => 'Re-Opened',
-            self::STATUS_HALTED => 'Halted',
-            self::STATUS_RESOLVED => 'Resolved',
-            self::STATUS_CONFIRMED => 'Confirmed',
-            self::STATUS_REJECTED => 'Rejected',
-        );
-    }
-    
-    public function getStatusName($status = null)
-    {
-        return $this->statusList[$status ?: $this->status];
-    }
-    
-    public function getStatusLabel($status = null)
-    {
-        $colors = array(
-            Issue::STATUS_NEW => 'info',
-            Issue::STATUS_OPENED => 'warning',
-            Issue::STATUS_REOPENED => 'warning',
-            Issue::STATUS_HALTED => '',
-            Issue::STATUS_RESOLVED => 'success',
-            Issue::STATUS_CONFIRMED => 'success',
-            Issue::STATUS_REJECTED => 'inverse',
-        );
-        
-        $status = $status ?: $this->status;
-        return TbHtml::labelTb($this->getStatusName($status), array('color' => $colors[$status]));
-    }
-    
-    public function getTypeList()
-    {
-        return array(
-            self::TYPE_FEATURE => 'Feature',
-            self::TYPE_BUG => 'Bug',
-            self::TYPE_ENHANCEMENT => 'Enhancement',
-        );
-    }
-    
-    public function getTypeName($type = null)
-    {
-        return $this->typeList[$type ?: $this->type];
-    }
-    
-    public function getTypeLabel($type = null)
-    {
-        $icons = array(
-            Issue::TYPE_FEATURE => 'puzzle-piece',
-            Issue::TYPE_BUG => 'bug',
-            Issue::TYPE_ENHANCEMENT => 'lightbulb'
-        );
-        
-        $type = $type ?: $this->type;
-        $label = TbHtml::icon($icons[$type]);
-        $label .= '&nbsp;';
-        $label .= TbHtml::encode($this->getTypeName($type));
-        return $label;
-    }
-    
-    public function getPriorityList()
-    {
-        return array(
-            self::PRIORITY_LOW => 'Low',
-            self::PRIORITY_MEDIUM => 'Medium',
-            self::PRIORITY_HIGH => 'High',
-            self::PRIORITY_IMMEDIATE => 'Immediate',
-        );
-    }
-    
-    public function getPriorityName($priority = null)
-    {
-        return $this->priorityList[$priority ?: $this->priority];
-    }
-    
-    public function getPriorityLabel($priority = null)
-    {
-        $colors = array(
-            Issue::PRIORITY_LOW => 'success',
-            Issue::PRIORITY_MEDIUM => 'warning',
-            Issue::PRIORITY_HIGH => 'important',
-            Issue::PRIORITY_IMMEDIATE => 'very-important',
-        );
-        
-        $priority = $priority ?: $this->priority;
-        return TbHtml::labelTb($this->getPriorityName($priority), array('color' => $colors[$priority]));
     }
 }

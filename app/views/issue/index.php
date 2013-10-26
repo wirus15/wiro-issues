@@ -46,7 +46,10 @@ $this->breadcrumbs = array('Issues');
         <?php $this->renderPartial('_filters', array('model' => $model)); ?>
     </div>
    
-    <?= CHtml::activeHiddenField($model, 'statusScope'); ?>
+    <div class="filter-scopes">
+        <?= CHtml::activeHiddenField($model, 'statusScope'); ?>
+        <?= CHtml::activeHiddenField($model, 'watchedScope'); ?>
+    </div>
     
     <?php
     $this->widget('bootstrap.widgets.TbGridView', array(
@@ -54,7 +57,7 @@ $this->breadcrumbs = array('Issues');
         'type' => array(TbHtml::GRID_TYPE_BORDERED, TbHtml::GRID_TYPE_STRIPED, TbHtml::GRID_TYPE_CONDENSED),
         'dataProvider' => $model->search(),
         'filter' => $model,
-        'filterSelector' => '{filter},#Issue_statusScope',
+        'filterSelector' => '{filter},.filter-scopes input',
         'template' => "<div class=\"pull-right\">{summary}</div>{items}\n{pager}",
         'columns' => array(
             array(

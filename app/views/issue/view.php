@@ -28,17 +28,23 @@ $this->breadcrumbs=array(
     </legend>
     
     <p>
-    <?= TbHtml::buttonGroup(array(
-	array('label' => 'Update', 'url' => array('update', 'id'=>$model->issueId), 'icon' => 'pencil'),
-        array('label' => $model->statusName, 'url' => '#', 'icon' => 'flag', 'items' => array_map(function($status) use ($model) {
+    <?= TbHtml::buttonDropdown(
+        $model->statusName, 
+        array_map(function($status) use ($model) {
             return array(
                 'label' => $model->getStatusName($status),
                 'url' => array('status', 'id' => $model->issueId, 'status' => $status),
             );
-        }, array_keys($model->statusList))),
+        }, array_keys($model->statusList)),
+        array('icon' => 'flag')); ?>
+        
+    <?= TbHtml::buttonGroup(array(
+	array('label' => 'Update', 'url' => array('update', 'id'=>$model->issueId), 'icon' => 'pencil'),
         array('label' => 'Delete', 'confirm' => 'Are you sure you want to delete this issue?', 'submit' => array('delete', 'id'=>$model->issueId), 'color' => TbHtml::BUTTON_COLOR_DANGER, 'icon' => 'trash'),
     )); ?>
-        &nbsp;&nbsp;
+        
+    &nbsp;
+
     <?= TbHtml::linkButton('Issue list', array('url' => array('index'), 'icon' => 'tasks')); ?>
     </p>
     

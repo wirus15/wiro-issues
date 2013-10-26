@@ -3,6 +3,10 @@
         array('label' => 'All', 'class'=>'active', 'htmlOptions' => array(
             'data-filter' => 'Issue_assignedTo',
         )),
+        array('label' => 'Watched', 'class'=>'', 'htmlOptions' => array(
+            'data-filter' => CHtml::activeId($model, 'watchedScope'),
+            'data-value' => 1,
+        )),
         array('label' => 'Assigned to me', 'htmlOptions' => array(
             'data-filter' => 'Issue_assignedTo',
             'data-value' => Yii::app()->user->id,
@@ -17,7 +21,7 @@
         )),
     ), array(
         'toggle' => 'radio', 
-        'data-clear' => 'Issue_assignedTo,Issue_authorId',
+        'data-clear' => 'Issue_assignedTo,Issue_authorId,Issue_watchedScope',
     )); ?>
 
     <?= TbHtml::buttonGroup(array(

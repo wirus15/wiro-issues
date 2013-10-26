@@ -30,6 +30,10 @@ class ActivityBehavior extends CActiveRecordBehavior
                     $this->createActivity($activity);
             }
         }
+        
+        else {
+            $this->addWatch();
+        }
     }
     
     public function addComment($text)
@@ -52,10 +56,13 @@ class ActivityBehavior extends CActiveRecordBehavior
                 $activity->activityData = $this->owner->priority;
                 break;
             case Activity::TYPE_ASSIGNMENT:
-                $username = $this->owner->assignedTo
-                    ? User::model()->findByPk($this->owner->assignedTo)->username
-                    : '<span class="nobody">nobody</span>';
-                $activity->activityData = $username;
+                if($this->owner->assignedTo) {
+                    $username = User::model()->findByPk($this->owner->assignedTo)->username;
+                    $activity->activityData = $username;
+                    $this->addWatch($this->owner->assignedTo);
+                } else {
+                    $activity->activityData = '<span class="nobody">nobody</span>';
+                }
                 break;
             case Activity::TYPE_COMMENT:
                 $activity->activityData = $content;
