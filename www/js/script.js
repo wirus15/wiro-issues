@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    $('body').on('click', 'button.disabled, a.disabled', function(e) {
+        return false; 
+    });
+    
     $('#issue-tabs a, #issue-filters a').on('click', function(e) {
         var filter = $(this).attr('data-filter') !== undefined
                 ? $(this).attr('data-filter')
@@ -27,7 +31,7 @@ $(document).ready(function() {
         return false;
     });
     
-    $('.add-comment form').on('submit', function(e) {
+    $('.add-comment form, form.comment-update').on('submit', function(e) {
         e.preventDefault();
         var form = $(this);
         var button = form.find('button[type="submit"]');
@@ -36,7 +40,7 @@ $(document).ready(function() {
         $.post(form.attr('action'), form.serialize(), function() {
             $.fn.yiiListView.update('activity-list-view');
             button.prop('diabled', false).removeClass('disabled');
-            $('#Activity_activityData').redactor('set', '');
+            $('#new-comment').redactor('set', '');
         });
     });
     
@@ -52,5 +56,24 @@ $(document).ready(function() {
                 $.fn.yiiListView.update('activity-list-view');
             });
         };
+    });
+    
+    $('body').on('click', '#activity-list-view .items a.update', function(e) {
+        var comment = $(this).parents('.well').find('blockquote');
+        comment.redactor({ focus: true });
+    });
+    
+    $('body').on('click', '#activity-list-view .comment-update button[type="submit"]', function(e) {
+        var textarea = $(this).parents('form').find('textarea');
+        var blockquote = $(this).parents('form').find('blockquote');
+        textarea.val(blockquote.redactor('get'));
+        blockquote.redactor('destroy');
+    });
+    
+    $('body').on('click', '#activity-list-view .comment-update button.cancel', function(e) {
+        var textarea = $(this).parents('form').find('textarea');
+        var blockquote = $(this).parents('form').find('blockquote');
+        blockquote.redactor('destroy');
+        blockquote.html(textarea.val());
     });
 });

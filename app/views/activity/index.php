@@ -30,6 +30,7 @@
             <?php $this->widget('bootstrap.widgets.TbRedactorJs', array(
                 'model' => $model,
                 'attribute' => 'activityData',
+                'id' => 'new-comment',
             )); ?>
         </p>
         

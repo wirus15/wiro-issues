@@ -41,6 +41,7 @@ class Activity extends wiro\base\ActiveRecord
     public function rules()
     {
         return array(
+            array('activityData', 'safe', 'on' => 'update'),
             array('issueId, activityType', 'safe', 'on' => 'search'),
         );
     }
@@ -63,6 +64,7 @@ class Activity extends wiro\base\ActiveRecord
             'timestamp' => array(
                 'class' => 'zii.behaviors.CTimestampBehavior',
 		'createAttribute' => 'dateCreated',
+                'updateAttribute' => null,
 		'timestampExpression' => 'Yii::app()->dateFormatter->format(\'yyyy-MM-dd HH:mm:ss\', time())',
             ),
         );

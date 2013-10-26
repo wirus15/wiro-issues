@@ -21,6 +21,11 @@ form {
     outline: none !important;
 }
 
+blockquote.redactor_editor {
+    border: none;
+    margin-bottom: 10px;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 
@@ -251,4 +256,16 @@ i[class^="icon-"] {
         float: right;
         width: 49%;
     }
+}
+
+.comment-update .redactor_box {
+    margin: 6px 0px;
+}
+
+.comment-update blockquote + .edit-actions {
+    display: none;
+}
+
+.comment-update textarea {
+    display: none;
 }
