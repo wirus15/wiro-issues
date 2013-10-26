@@ -8,7 +8,25 @@ $this->breadcrumbs=array(
 ?>
 
 <fieldset id="issue-view">
-    <legend>Issue #<i><?= $model->issueId; ?>: <?= $model->title; ?></i></legend>
+    <legend>
+        Issue #<i><?= $model->issueId; ?>: <?= $model->title; ?></i>
+        <?php 
+            if(!$model->isBeingWatched)
+                echo TbHtml::linkButton('Watch', array(
+                    'url' => array('watch', 'id'=>$model->issueId, 'watch'=>1),
+                    'class' => 'pull-right', 
+                    'color' => 'primary', 
+                    'icon' => 'eye-open'));
+            else
+                echo TbHtml::linkButton('Unwatch', array(
+                    'url' => array('watch', 'id'=>$model->issueId, 'watch'=>0),
+                    'class' => 'pull-right', 
+                    'color' => 'danger', 
+                    'icon' => 'eye-close',
+                ));
+        ?>
+    </legend>
+    
     <p>
     <?= TbHtml::buttonGroup(array(
 	array('label' => 'Update', 'url' => array('update', 'id'=>$model->issueId), 'icon' => 'pencil'),

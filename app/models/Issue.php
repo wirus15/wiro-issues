@@ -71,6 +71,7 @@ class Issue extends wiro\base\ActiveRecord
             'author' => array(self::BELONGS_TO, 'wiro\modules\users\models\User', 'authorId'),
             'assignee' => array(self::BELONGS_TO, 'wiro\modules\users\models\User', 'assignedTo'),
             'activities' => array(self::HAS_MANY, 'Activity', 'issueId'),
+            'watches' => array(self::HAS_MANY, 'Watch', 'issueId'),
         );
     }
 

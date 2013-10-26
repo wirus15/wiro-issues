@@ -64,4 +64,14 @@ class IssueController extends wiro\base\Controller
         }
         $this->redirect(array('view', 'id'=>$id));
     }
+    
+    public function actionWatch($id, $watch = true)
+    {
+        $model = $this->loadModel($id);
+        if($watch)
+            $model->addWatch();
+        else
+            $model->removeWatch();
+        $this->redirect(array('view', 'id'=>$id));
+    }
 }

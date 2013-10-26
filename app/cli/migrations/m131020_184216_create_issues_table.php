@@ -16,6 +16,9 @@ class m131020_184216_create_issues_table extends CDbMigration
             'status' => 'integer not null',
             'dateCreated' => 'datetime',
             'dateModified' => 'datetime',
+            'foreign key (authorId) references {{users}}(userId) on update cascade on delete restrict',
+            'foreign key (categoryId) references {{categories}}(categoryId) on update cascade on delete restrict',
+            'foreign key (assignedTo) references {{users}}(userId) on update cascade on delete set null',
         ));
     }
 

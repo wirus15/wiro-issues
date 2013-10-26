@@ -64,4 +64,31 @@ class ActivityBehavior extends CActiveRecordBehavior
         
         $activity->save();
     }
+    
+    public function getIsBeingWatched($userId = null)
+    {
+        return Watch::model()->count('userId=:user and issueId=:issue', array(
+            ':user' => $userId ?: Yii::app()->user->id,
+            ':issue' => $this->owner->issueId,
+        )) > 0;
+    }
+    
+    public function addWatch($userId = null)
+    {
+        if(!$this->getIsBeingWatched($userId)) {
+            $watch = new Watch();
+            $watch->userId = $userId ?: Yii::app()->user->id;
+            $watch->issueId = $this->owner->issueId;
+            return $watch->save();
+        } 
+        return false;
+    }
+    
+    public function removeWatch($userId = null)
+    {
+        Watch::model()->deleteAllByAttributes(array(
+            'userId' => $userId ?: Yii::app()->user->id,
+            'issueId' => $this->owner->issueId,
+        ));
+    }
 }
