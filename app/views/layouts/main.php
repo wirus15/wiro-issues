@@ -11,10 +11,11 @@
     </head>
 
     <body>
+        <?php $notifications = $this->widget('application.widgets.NotificationsWidget'); ?>
         <div id="wrap">
             <div class="container-fluid">
                 <nav id="main-menu">
-                    <?php
+                    <?php              
                     $this->widget('bootstrap.widgets.TbNavbar', array(
                         'brand' => Yii::app()->name,
                         'fixed' => 'top',
@@ -27,7 +28,9 @@
                             array(
                                 'class' => 'bootstrap.widgets.TbMenu',
                                 'htmlOptions' => array('class' => 'pull-right'),
+                                'encodeLabel' => false,
                                 'items' => array(
+                                    $notifications->link,
                                     array(
                                         'label' => 'Sign in',
                                         'url' => array('/user/login/login'),

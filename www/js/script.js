@@ -76,4 +76,27 @@ $(document).ready(function() {
         blockquote.redactor('destroy');
         blockquote.html(textarea.val());
     });
+    
+    $("#notifications .arrow").css({
+        left: 'auto',
+        right: $('#main-menu').width() - $('#main-menu .show-notifications').offset().left - $('#main-menu .show-notifications').width() / 2
+    });
+    
+    $('#main-menu .show-notifications').on('click', function(e) {
+        $('#notifications').fadeToggle('fast');
+    });
+    
+    $('body').on('click', '.notification a.remove', function(e) {
+        var url = $(this).attr('href');
+        $.post(url, function(data) {
+            $.fn.yiiListView.update('notification-list-view');
+            var count = $('#notification-count');
+            count.text(count.text()-1);
+            if(count.text() <= 0) {
+                count.text(0);
+                count.parents('.show-notifications').removeClass('active');
+            }
+        });
+        return false;
+    });
 });

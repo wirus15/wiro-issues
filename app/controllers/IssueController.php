@@ -44,7 +44,12 @@ class IssueController extends wiro\base\Controller
             ),
             'delete' => 'wiro\actions\DeleteAction',
             'index' => 'wiro\actions\IndexAction',
-            'view' => 'wiro\actions\ViewAction',
+            'view' => array(
+                'class' => 'wiro\actions\ViewAction',
+                'beforeRender' => function($model) {
+                    $model->removeNotifications();
+                },
+            ),
         );
     }
     

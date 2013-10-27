@@ -15,6 +15,10 @@
  * @property integer $priority
  * @property string $dateCreated
  * @property string $dateModified
+ * @property Category $category
+ * @property User $assignee
+ * @property Activity[] $activities
+ * @property Watch[] $watches 
  */
 class Issue extends wiro\base\ActiveRecord
 {
@@ -126,9 +130,10 @@ class Issue extends wiro\base\ActiveRecord
                 'params' => array(':confirmed' => self::STATUS_CONFIRMED),
             ),
             'watched' => array(
-                'join' => 'left join {{watches}} w on t.issueId=w.issueId',
-                'condition' => 'w.userId=:user',
+                'with' => array('watches'),
+                'condition' => 'watches.userId=:user',
                 'params' => array(':user' => Yii::app()->user->id),
+                'together' => true,
             ),
         );
     }

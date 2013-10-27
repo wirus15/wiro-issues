@@ -2,6 +2,9 @@
 
 use wiro\modules\users\models\User;
 
+/**
+ * @property Issue $owner
+ */
 class ActivityBehavior extends CActiveRecordBehavior
 {
     private $originalProperties = array();
@@ -69,15 +72,17 @@ class ActivityBehavior extends CActiveRecordBehavior
                 break;
         }
         
-        $activity->save();
+        if($activity->save()) {
+            $this->sendNotifications($activity->activityId);
+        }
     }
     
     public function getIsBeingWatched($userId = null)
     {
-        return Watch::model()->count('userId=:user and issueId=:issue', array(
+        return Watch::model()->exists('userId=:user and issueId=:issue', array(
             ':user' => $userId ?: Yii::app()->user->id,
             ':issue' => $this->owner->issueId,
-        )) > 0;
+        ));
     }
     
     public function addWatch($userId = null)
@@ -86,16 +91,51 @@ class ActivityBehavior extends CActiveRecordBehavior
             $watch = new Watch();
             $watch->userId = $userId ?: Yii::app()->user->id;
             $watch->issueId = $this->owner->issueId;
-            return $watch->save();
+            $watch->save();
         } 
         return false;
     }
     
     public function removeWatch($userId = null)
     {
-        Watch::model()->deleteAllByAttributes(array(
+        Watch::model()->deleteByPk(array(
             'userId' => $userId ?: Yii::app()->user->id,
             'issueId' => $this->owner->issueId,
+        ));
+    }
+    
+    public function sendNotifications($activityId)
+    {
+        foreach($this->owner->watches as $watch)
+        {
+            if($watch->userId !== Yii::app()->user->id)
+            {
+                $notification = new Notification();
+                $notification->userId = $watch->userId;
+                $notification->activityId = $activityId;
+                $notification->save();
+            }
+        }
+    }
+    
+    public function removeNotifications($userId = null)
+    {
+        $builder = Yii::app()->db->commandBuilder;
+        
+        $subquery = $builder->createFindCommand(
+            Activity::model()->tableName(), 
+            new CDbCriteria(array(
+                'select' => 'activityId',
+                'condition' => 'issueId=:issue',
+            ))
+        )->text;
+        
+        return Notification::model()->deleteAll(array(
+            'condition' => 'userId=:user and activityId in ('.$subquery.')',
+            'params' => array(
+                ':user' => $userId ?: Yii::app()->user->id,
+                ':issue' => $this->owner->issueId,
+            ),
         ));
     }
 }
