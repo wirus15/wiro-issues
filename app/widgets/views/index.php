@@ -12,7 +12,7 @@
         <?php 
             $this->widget('bootstrap.widgets.TbListView', array(
                 'id' => 'notification-list-view',
-                'itemView' => '/notification/_view',
+                'itemView' => '_view',
                 'template' => '{items}',
                 'dataProvider' => $dataProvider,
             ));

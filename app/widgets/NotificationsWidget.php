@@ -27,7 +27,7 @@ class NotificationsWidget extends CWidget
     
     public function run()
     {
-        $this->controller->renderPartial('/notification/index', array(
+        $this->render('index', array(
             'dataProvider' => $this->notifications,
         ));
     }
