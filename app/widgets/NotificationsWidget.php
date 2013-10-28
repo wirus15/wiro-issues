@@ -27,15 +27,18 @@ class NotificationsWidget extends CWidget
     
     public function run()
     {
-        $this->render('index', array(
-            'dataProvider' => $this->notifications,
-        ));
+       if(!Yii::app()->user->isGuest) {
+         $this->render('index', array(
+             'dataProvider' => $this->notifications,
+         ));
+       }
     }
     
     public function getLink()
     {
-        $count = $this->notifications->itemCount;
-        return array(
+       if($this->notifications) {
+         $count = $this->notifications->itemCount;
+         return array(
             'label' => sprintf('Notifications (<span id="notification-count">%d</span>)', $count),
             'url' => '#',
             'visible' => !Yii::app()->user->isGuest,
@@ -44,6 +47,8 @@ class NotificationsWidget extends CWidget
             'linkOptions' => array(
                 'class' => $count ? 'show-notifications active' : 'show-notifications',
             ),
-        );
+         );
+       }
+       return array('label'=>'');
     }
 }
