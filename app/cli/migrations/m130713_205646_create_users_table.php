@@ -16,7 +16,7 @@ class m130713_205646_create_users_table extends CDbMigration
             'lastLogin' => 'datetime',
             'suspended' => 'boolean default 0',
             'suspensionReason' => 'text',
-            'role' => 'string default user',
+            'role' => 'string default \'user\'',
         ));
 
         $this->createTable('{{user_profiles}}', array(
