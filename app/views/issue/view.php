@@ -50,13 +50,18 @@ $this->breadcrumbs=array(
     
     <?php $this->widget('bootstrap.widgets.TbDetailView', array(
 	'data'=>$model,
+        'id' => 'issue-details',
 	'attributes'=>array(
 		'issueId',
 		'author.username:text:Author',
 		'category.categoryName:text:Category',
 		'typeLabel:html:Type',
 		'title',
-		'description:html',
+		array(
+                    'name' => 'description',
+                    'type' => 'html',
+                    'cssClass' => 'description',
+                ),
 		'assignee.username:text:Assigned to',
 		'statusLabel:html:Status',
                 'priorityLabel:html:Priority',
