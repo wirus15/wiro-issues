@@ -41,8 +41,18 @@ class IssueController extends wiro\base\Controller
             ),
             'update' => array(
                 'class' => 'wiro\actions\UpdateAction',
+                'beforePostAssignment' => function($model) {
+                    if($model->authorId !== Yii::app()->user->id)
+                        throw new Exception('You cannot edit this issue.', 403);
+                },
             ),
-            'delete' => 'wiro\actions\DeleteAction',
+            'delete' => array(
+                'class' => 'wiro\actions\DeleteAction',
+                'beforeDelete' => function($model) {
+                    if($model->authorId !== Yii::app()->user->id)
+                        throw new Exception('You cannot delete this issue.', 403);
+                },
+            ),
             'index' => 'wiro\actions\IndexAction',
             'view' => array(
                 'class' => 'wiro\actions\ViewAction',

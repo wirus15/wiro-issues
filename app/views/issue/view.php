@@ -38,10 +38,13 @@ $this->breadcrumbs=array(
         }, array_keys($model->statusList)),
         array('icon' => 'flag')); ?>
         
-    <?= TbHtml::buttonGroup(array(
-	array('label' => 'Update', 'url' => array('update', 'id'=>$model->issueId), 'icon' => 'pencil'),
-        array('label' => 'Delete', 'confirm' => 'Are you sure you want to delete this issue?', 'submit' => array('delete', 'id'=>$model->issueId), 'color' => TbHtml::BUTTON_COLOR_DANGER, 'icon' => 'trash'),
-    )); ?>
+    <?php if($model->authorId === Yii::app()->user->id): 
+        echo TbHtml::buttonGroup(array(
+            array('label' => 'Update', 'url' => array('update', 'id'=>$model->issueId), 'icon' => 'pencil'),
+            array('label' => 'Delete', 'confirm' => 'Are you sure you want to delete this issue?', 'submit' => array('delete', 'id'=>$model->issueId), 'color' => TbHtml::BUTTON_COLOR_DANGER, 'icon' => 'trash'),
+        ));
+        endif; 
+    ?>
         
     &nbsp;
 

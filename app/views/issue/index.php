@@ -107,6 +107,14 @@ $this->breadcrumbs = array('Issues');
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',
                 'template' => '{view} {update} {delete}',
+                'buttons' => array(
+                    'update' => array(
+                        'visible' => '$data->authorId===Yii::app()->user->id',
+                    ),
+                    'delete' => array(
+                        'visible' => '$data->authorId===Yii::app()->user->id',
+                    ),
+                ),
             ),
         ),
     ));
