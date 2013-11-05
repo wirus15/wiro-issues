@@ -62,9 +62,10 @@ class IssueFilter extends CWidget
         if(empty($attributes))
             return $attributes;
         
+        $model = $this->model;
         $attributes = array_map('trim', explode(',', $attributes));
-        $attributes = array_map(function($attribute) {
-            return CHtml::activeId($this->model, $attribute);
+        $attributes = array_map(function($attribute) use ($model) {
+            return CHtml::activeId($model, $attribute);
         }, $attributes);
         
         return implode(',', $attributes);
