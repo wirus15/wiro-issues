@@ -22,24 +22,25 @@ class IssueFilter extends CWidget
     private function prepareItems()
     {
         $hasActive = false;
-        $th = $this;
-        $items = array_map(function($item) use ($th, &$hasActive) {
-            if($th->isActive($item)) {
+        $items = array();
+        
+        foreach($this->items as $item) {
+            if($this->isActive($item)) {
                 $hasActive = true;
                 $item['class'] = 'active';
             }
             
             if(isset($item['filter'])) {
                 $filter = $item['filter'];
-                $item['htmlOptions']['data-filter'] = $th->formatAttributes($filter);
+                $item['htmlOptions']['data-filter'] = $this->formatAttributes($filter);
                 unset($item['filter']);
             }
             if(isset($item['value'])) {
                 $item['htmlOptions']['data-value'] = $item['value'];
                 unset($item['value']);
             }
-            return $item;
-        }, $this->items);
+            $items[] = $item;
+        }
         
         if(!$hasActive) 
             foreach($items as &$item)
