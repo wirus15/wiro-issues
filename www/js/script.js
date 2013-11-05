@@ -87,22 +87,21 @@ $(document).ready(function() {
         e.stopPropagation();
     });
     
-    $('#notifications').on('click', function(e) {
-        e.stopPropagation();
-    });
+    $(document).on('click', function(event) { 
+        if($(event.target).parents().index($('#notifications')) === -1) {
+            $('#notifications').fadeOut('fast');
+        }
+    });   
     
-    $('body').on('click', function(e) {
-        $('#notifications').fadeOut('fast');
-    });
-    
-    $('body').on('click', '.notification a.remove', function(e) {
+    $('body').on('click', '#notifications a.remove', function(e) {
         var url = $(this).attr('href');
         $.post(url, function(data) {
-            $.fn.yiiListView.update('notification-list-view');
+            var notificationsLeft = parseInt(data);
             var count = $('#notification-count');
-            count.text(count.text()-1);
-            if(count.text() <= 0) {
-                count.text(0);
+            
+            $.fn.yiiListView.update('notification-list-view');
+            count.text(notificationsLeft);
+            if(notificationsLeft === 0) {
                 count.parents('.show-notifications').removeClass('active');
             }
         });

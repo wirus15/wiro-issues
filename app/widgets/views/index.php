@@ -2,7 +2,7 @@
     <div class="arrow"></div>
     <h3 class="popover-title">
         Notifications
-        <a class="remove-all pull-right" href="#" id="yt0">
+        <a class="remove pull-right" href="<?= $this->controller->createUrl('/notification/deleteall'); ?>">
             <i class="icon-remove"></i> Remove all
         </a>
     </h3>

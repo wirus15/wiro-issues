@@ -41,6 +41,10 @@ class NotificationController extends wiro\base\Controller
 
         if (!Yii::app()->request->isAjaxRequest)
             $this->redirect(Yii::app()->request->urlReferrer);
+        
+        echo Notification::model()->count('userId=:user', array(
+            ':user' => Yii::app()->user->id,
+        ));
     }
 
     public function actionDeleteall()
@@ -51,6 +55,8 @@ class NotificationController extends wiro\base\Controller
 
         if (!Yii::app()->request->isAjaxRequest)
             $this->redirect(Yii::app()->request->urlReferrer);
+        
+        echo 0;
     }
 
 }
