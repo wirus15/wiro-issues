@@ -28,10 +28,6 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/wirus15/yii"
-        },
-        {
-            "type": "vcs",
             "url": "https://github.com/wirus15/yii-wiro"
         },
         {
