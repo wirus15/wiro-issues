@@ -39,6 +39,9 @@ class ActivityBehavior extends CActiveRecordBehavior
             $this->addWatch();
             if($this->owner->assignedTo && $this->owner->assignedTo !== Yii::app()->user->id)
                 $this->createActivity(Activity::TYPE_ASSIGNMENT);
+            
+            else if(!$this->owner->assignedTo && isset(Yii::app()->params['newIssueNotificationEmail']))
+                $this->notifyAboutNewIssue(Yii::app()->params['newIssueNotificationEmail']);
         }
     }
     
@@ -150,6 +153,23 @@ class ActivityBehavior extends CActiveRecordBehavior
     private function notifyByEmail($email)
     {
         $body = Yii::app()->controller->renderPartial('/email/assignment', array(
+            'user' => Yii::app()->user->name,
+            'issue' => $this->owner,
+            'link' => Yii::app()->controller->createAbsoluteUrl('/issue/view', array('id'=>$this->owner->issueId)),
+        ), true);
+	   
+	$message = new YiiMailMessage;
+	$message->setBody($body, 'text/html');
+	$message->setSubject(Yii::app()->controller->emailSubject);
+	$message->setFrom(Yii::app()->params->adminEmail);
+	$message->setTo($email);
+        
+	Yii::app()->mail->send($message);
+    }
+    
+    private function notifyAboutNewIssue($email)
+    {
+        $body = Yii::app()->controller->renderPartial('/email/newissue', array(
             'user' => Yii::app()->user->name,
             'issue' => $this->owner,
             'link' => Yii::app()->controller->createAbsoluteUrl('/issue/view', array('id'=>$this->owner->issueId)),
