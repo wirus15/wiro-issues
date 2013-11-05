@@ -36,6 +36,8 @@ class ActivityBehavior extends CActiveRecordBehavior
         
         else {
             $this->addWatch();
+            if($this->owner->assignedTo && $this->owner->assignedTo !== Yii::app()->user->id)
+                $this->createActivity(Activity::TYPE_ASSIGNMENT);
         }
     }
     
@@ -106,7 +108,11 @@ class ActivityBehavior extends CActiveRecordBehavior
     
     public function sendNotifications($activityId)
     {
-        foreach($this->owner->watches as $watch)
+        $watches = $this->owner->isNewRecord
+                ? Watch::model()->findAllByAttributes(array('issueId' => $this->owner->issueId))
+                : $this->owner->watches;
+        
+        foreach($watches as $watch)
         {
             if($watch->userId !== Yii::app()->user->id)
             {

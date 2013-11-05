@@ -84,6 +84,15 @@ $(document).ready(function() {
     
     $('#main-menu .show-notifications').on('click', function(e) {
         $('#notifications').fadeToggle('fast');
+        e.stopPropagation();
+    });
+    
+    $('#notifications').on('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    $('body').on('click', function(e) {
+        $('#notifications').fadeOut('fast');
     });
     
     $('body').on('click', '.notification a.remove', function(e) {

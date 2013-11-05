@@ -180,6 +180,9 @@ class Issue extends wiro\base\ActiveRecord
             'sort' => array(
                 'defaultOrder' => 'priority desc, dateCreated asc',
             ),
+            'pagination' => array(
+                'pageSize' => 30,
+            ),
         ));
     }
 

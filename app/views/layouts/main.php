@@ -17,7 +17,7 @@
                 <nav id="main-menu">
                     <?php              
                     $this->widget('bootstrap.widgets.TbNavbar', array(
-                        'brand' => Yii::app()->name,
+                        'brand' => Yii::app()->params['brand'] ?: Yii::app()->name,
                         'fixed' => 'top',
                         'fluid' => true,
                         'items' => array(
