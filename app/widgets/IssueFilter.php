@@ -22,7 +22,8 @@ class IssueFilter extends CWidget
     private function prepareItems()
     {
         $hasActive = false;
-        $items = array_map(function($item) use ($this, &$hasActive) {
+        $th = $this;
+        $items = array_map(function($item) use ($th, &$hasActive) {
             if($this->isActive($item)) {
                 $hasActive = true;
                 $item['class'] = 'active';
