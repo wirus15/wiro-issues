@@ -1,5 +1,6 @@
 <?php
 
+use wiro\components\mail\YiiMailMessage;
 use wiro\modules\users\models\User;
 
 /**
@@ -62,9 +63,10 @@ class ActivityBehavior extends CActiveRecordBehavior
                 break;
             case Activity::TYPE_ASSIGNMENT:
                 if($this->owner->assignedTo) {
-                    $username = User::model()->findByPk($this->owner->assignedTo)->username;
-                    $activity->activityData = $username;
+                    $user = User::model()->findByPk($this->owner->assignedTo);
+                    $activity->activityData = $user->username;
                     $this->addWatch($this->owner->assignedTo);
+                    $this->notifyByEmail($user->email);
                 } else {
                     $activity->activityData = '<span class="nobody">nobody</span>';
                 }
@@ -143,5 +145,23 @@ class ActivityBehavior extends CActiveRecordBehavior
                 ':issue' => $this->owner->issueId,
             ),
         ));
+    }
+    
+    private function notifyByEmail($email)
+    {
+        $body = Yii::app()->controller->renderPartial('/email/assignment', array(
+            'user' => Yii::app()->user->name,
+            'issue' => $this->owner,
+            'link' => Yii::app()->controller->createAbsoluteUrl('/issue/view', array('id'=>$this->owner->issueId)),
+        ), true);
+	   
+	$message = new YiiMailMessage;
+	$message->setBody($body, 'text/html');
+	$message->setSubject(Yii::app()->controller->emailSubject);
+	$message->setFrom(Yii::app()->params->adminEmail);
+	$message->setTo($email);
+        
+        var_dump($message); die();
+	Yii::app()->mail->send($message);
     }
 }
