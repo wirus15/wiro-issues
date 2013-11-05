@@ -24,14 +24,14 @@ class IssueFilter extends CWidget
         $hasActive = false;
         $th = $this;
         $items = array_map(function($item) use ($th, &$hasActive) {
-            if($this->isActive($item)) {
+            if($th->isActive($item)) {
                 $hasActive = true;
                 $item['class'] = 'active';
             }
             
             if(isset($item['filter'])) {
                 $filter = $item['filter'];
-                $item['htmlOptions']['data-filter'] = $this->formatAttributes($filter);
+                $item['htmlOptions']['data-filter'] = $th->formatAttributes($filter);
                 unset($item['filter']);
             }
             if(isset($item['value'])) {
