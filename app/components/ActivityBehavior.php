@@ -161,7 +161,6 @@ class ActivityBehavior extends CActiveRecordBehavior
 	$message->setFrom(Yii::app()->params->adminEmail);
 	$message->setTo($email);
         
-        var_dump($message); die();
 	Yii::app()->mail->send($message);
     }
 }
