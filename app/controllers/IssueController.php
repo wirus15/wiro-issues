@@ -63,6 +63,14 @@ class IssueController extends wiro\base\Controller
         );
     }
     
+    public function actionIndex()
+    {
+        $model = new Issue('search');
+        $this->render('index',array(
+            'model'=>$model,
+        ));
+    }
+    
     public function actionStatus($id, $status)
     {
         $model = $this->loadModel($id);

@@ -115,6 +115,9 @@ class Issue extends wiro\base\ActiveRecord
             'issue-attributes' => array(
                 'class' => 'application.components.IssueAttributesBehavior',
             ),
+            'remember-filters' => array(
+                'class' => 'ext.ERememberFiltersBehavior',
+            ),
         );
     }
     

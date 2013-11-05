@@ -16,6 +16,9 @@ $(document).ready(function() {
             $.each(clear.split(','), function(i, c) {
                 $('#' + c).val('').prop('selected', false);
             });
+            if(filter === undefined) {
+                $('#issue-grid .filters input').first().change();
+            }
         }
 
         if (filter !== undefined) {
