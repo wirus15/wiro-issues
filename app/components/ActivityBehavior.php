@@ -45,6 +45,11 @@ class ActivityBehavior extends CActiveRecordBehavior
         }
     }
     
+    public function beforeDelete($event)
+    {
+        $this->createActivity(Activity::TYPE_DELETE);
+    }
+    
     public function addComment($text)
     {
         $this->createActivity(Activity::TYPE_COMMENT, $text);
@@ -77,6 +82,9 @@ class ActivityBehavior extends CActiveRecordBehavior
             case Activity::TYPE_COMMENT:
                 $activity->activityData = $content;
                 break;
+            case Activity::TYPE_DELETE:
+                $activity->issueId = null;
+                $activity->activityData = '#'.$this->owner->issueId.': '.$this->owner->title;
         }
         
         if($activity->save()) {
@@ -113,9 +121,7 @@ class ActivityBehavior extends CActiveRecordBehavior
     
     public function sendNotifications($activityId)
     {
-        $watches = $this->owner->isNewRecord
-                ? Watch::model()->findAllByAttributes(array('issueId' => $this->owner->issueId))
-                : $this->owner->watches;
+        $watches = Watch::model()->findAllByAttributes(array('issueId' => $this->owner->issueId));
         
         foreach($watches as $watch)
         {

@@ -18,6 +18,7 @@ class Activity extends wiro\base\ActiveRecord
     const TYPE_PRIORITY_CHANGE = 3;
     const TYPE_COMMENT = 4;
     const TYPE_ASSIGNMENT = 5;
+    const TYPE_DELETE = 6;
     
     /**
      * @return string the associated database table name

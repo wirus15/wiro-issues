@@ -13,6 +13,7 @@
         Activity::TYPE_PRIORITY_CHANGE => '_priority',
         Activity::TYPE_COMMENT => '_comment',
         Activity::TYPE_ASSIGNMENT => '_assignment',
+        Activity::TYPE_DELETE => '_delete',
     );
     
     $this->render($views[$data->activity->activityType], array(
