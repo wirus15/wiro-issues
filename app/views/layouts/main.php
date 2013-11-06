@@ -58,6 +58,8 @@
                         ));
                         ?>
                     </nav>
+                    
+                    <?php $this->widget('bootstrap.widgets.TbAlert'); ?>
 
                     <?= $content; ?>
                 </section>
