@@ -9,7 +9,7 @@ class m130713_214908_create_admin_user_and_base_auth_items extends CDbMigration
         $this->createUser(array(
             'username' => 'admin',
             'password' => 'admin',
-            'email' => 'admin@localhost',
+            'email' => 'admin@example.com',
             'role' => 'admin',
         ));
     }
@@ -19,7 +19,7 @@ class m130713_214908_create_admin_user_and_base_auth_items extends CDbMigration
         $auth = Yii::app()->authManager;
         $admin = $auth->createRole('admin', Yii::t('wiro', 'Administrator'));
         $user = $auth->createRole('user', Yii::t('wiro', 'User'), 'return !Yii::app()->user->isGuest');
-        $guest = $auth->createRole('guest', Yii::t('wiro', 'Guest'), 'return Yii::app()->user->isGuest');
+        $auth->createRole('guest', Yii::t('wiro', 'Guest'), 'return Yii::app()->user->isGuest');
         $admin->addChild('user');
         $user->addChild('guest');
     }
