@@ -32,6 +32,7 @@ return array(
         ),
         'upload' => array(
             'class' => 'wiro\components\UploadManager',
+            'uploadPath' => __DIR__.'/../../www/upload',
         ),
         'thumb' => array(
             'class' => 'wiro\components\image\ThumbnailCreator',

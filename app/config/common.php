@@ -14,6 +14,7 @@ return array(
     'name' => 'Issues',
     'basePath' => realpath(__DIR__ . '/..'),
     'aliases' => array(
+        'root' => realpath(__DIR__.'/../..'),
         'vendor' => 'application.lib.vendor',
         'wiro' => 'vendor.wirus15.yii-wiro',
         'HASH' => 'wiro.components.hash',

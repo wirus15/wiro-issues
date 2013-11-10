@@ -66,7 +66,7 @@ class Activity extends wiro\base\ActiveRecord
                 'class' => 'zii.behaviors.CTimestampBehavior',
 		'createAttribute' => 'dateCreated',
                 'updateAttribute' => null,
-		'timestampExpression' => 'Yii::app()->dateFormatter->format(\'yyyy-MM-dd HH:mm:ss\', time())',
+		'timestampExpression' => '\wiro\helpers\DateHelper::now()',
             ),
         );
     }
@@ -97,17 +97,6 @@ class Activity extends wiro\base\ActiveRecord
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
         ));
-    }
-    
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return Activity the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
     }
     
     public function getCanEdit($userId = null)

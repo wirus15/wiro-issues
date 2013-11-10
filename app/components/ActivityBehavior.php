@@ -1,7 +1,8 @@
 <?php
 
-use wiro\components\mail\YiiMailMessage;
 use wiro\modules\users\models\User;
+
+Yii::import('application.components.NotificationManager');
 
 /**
  * @property Issue $owner
@@ -9,6 +10,13 @@ use wiro\modules\users\models\User;
 class ActivityBehavior extends CActiveRecordBehavior
 {
     private $originalProperties = array();
+    private $notifications;
+    
+    public function attach($owner)
+    {
+        parent::attach($owner);
+        $this->notifications = new NotificationManager($owner);
+    }
     
     public function afterFind($event)
     {
@@ -18,21 +26,7 @@ class ActivityBehavior extends CActiveRecordBehavior
     public function afterSave($event)
     {
         if(!$this->owner->isNewRecord) {
-            $activities = array(
-                'categoryId' => Activity::TYPE_UPDATE,
-                'type' => Activity::TYPE_UPDATE,
-                'title' => Activity::TYPE_UPDATE,
-                'description' => Activity::TYPE_UPDATE,
-                'assignedTo' => Activity::TYPE_ASSIGNMENT,
-                'status' => Activity::TYPE_STATUS_CHANGE,
-                'priority' => Activity::TYPE_PRIORITY_CHANGE,
-            );
-
-            foreach($activities as $property => $activity)
-            {
-                if($this->originalProperties[$property] != $this->owner->$property)
-                    $this->createActivity($activity);
-            }
+            $this->watchForChanges();
         }
         
         else {
@@ -40,8 +34,27 @@ class ActivityBehavior extends CActiveRecordBehavior
             if($this->owner->assignedTo && $this->owner->assignedTo !== Yii::app()->user->id)
                 $this->createActivity(Activity::TYPE_ASSIGNMENT);
             
-            else if(!$this->owner->assignedTo && isset(Yii::app()->params['newIssueNotificationEmail']))
-                $this->notifyAboutNewIssue(Yii::app()->params['newIssueNotificationEmail']);
+            else if(!$this->owner->assignedTo)
+                $this->notifications->sendNewIssueEmail();
+        }
+    }
+    
+    private function watchForChanges()
+    {
+        $activities = array(
+            'categoryId' => Activity::TYPE_UPDATE,
+            'type' => Activity::TYPE_UPDATE,
+            'title' => Activity::TYPE_UPDATE,
+            'description' => Activity::TYPE_UPDATE,
+            'assignedTo' => Activity::TYPE_ASSIGNMENT,
+            'status' => Activity::TYPE_STATUS_CHANGE,
+            'priority' => Activity::TYPE_PRIORITY_CHANGE,
+        );
+
+        foreach($activities as $property => $activity)
+        {
+            if($this->originalProperties[$property] != $this->owner->$property)
+                $this->createActivity($activity);
         }
     }
     
@@ -74,7 +87,7 @@ class ActivityBehavior extends CActiveRecordBehavior
                     $user = User::model()->findByPk($this->owner->assignedTo);
                     $activity->activityData = $user->username;
                     $this->addWatch($this->owner->assignedTo);
-                    $this->notifyByEmail($user->email);
+                    $this->notifications->sendAssignmentEmail($user->email);
                 } else {
                     $activity->activityData = '<span class="nobody">nobody</span>';
                 }
@@ -88,7 +101,7 @@ class ActivityBehavior extends CActiveRecordBehavior
         }
         
         if($activity->save()) {
-            $this->sendNotifications($activity->activityId);
+            $this->notifications->sendNotifications($activity->activityId);
         }
     }
     
@@ -119,74 +132,8 @@ class ActivityBehavior extends CActiveRecordBehavior
         ));
     }
     
-    public function sendNotifications($activityId)
-    {
-        $watches = Watch::model()->findAllByAttributes(array('issueId' => $this->owner->issueId));
-        
-        foreach($watches as $watch)
-        {
-            if($watch->userId !== Yii::app()->user->id)
-            {
-                $notification = new Notification();
-                $notification->userId = $watch->userId;
-                $notification->activityId = $activityId;
-                $notification->save();
-            }
-        }
-    }
-    
     public function removeNotifications($userId = null)
     {
-        $builder = Yii::app()->db->commandBuilder;
-        
-        $subquery = $builder->createFindCommand(
-            Activity::model()->tableName(), 
-            new CDbCriteria(array(
-                'select' => 'activityId',
-                'condition' => 'issueId=:issue',
-            ))
-        )->text;
-        
-        return Notification::model()->deleteAll(array(
-            'condition' => 'userId=:user and activityId in ('.$subquery.')',
-            'params' => array(
-                ':user' => $userId ?: Yii::app()->user->id,
-                ':issue' => $this->owner->issueId,
-            ),
-        ));
-    }
-    
-    private function notifyByEmail($email)
-    {
-        $body = Yii::app()->controller->renderPartial('/email/assignment', array(
-            'user' => Yii::app()->user->name,
-            'issue' => $this->owner,
-            'link' => Yii::app()->controller->createAbsoluteUrl('/issue/view', array('id'=>$this->owner->issueId)),
-        ), true);
-	   
-	$message = new YiiMailMessage;
-	$message->setBody($body, 'text/html');
-	$message->setSubject(Yii::app()->controller->emailSubject);
-	$message->setFrom(Yii::app()->params->adminEmail);
-	$message->setTo($email);
-        
-	Yii::app()->mail->send($message);
-    }
-    
-    private function notifyAboutNewIssue($email)
-    {
-        $body = Yii::app()->controller->renderPartial('/email/newissue', array(
-            'user' => Yii::app()->user->name,
-            'issue' => $this->owner,
-            'link' => Yii::app()->controller->createAbsoluteUrl('/issue/view', array('id'=>$this->owner->issueId)),
-        ), true);
-	   
-	$message = new YiiMailMessage;
-	$message->setBody($body, 'text/html');
-	$message->setSubject(Yii::app()->controller->emailSubject);
-	$message->setFrom(Yii::app()->params->adminEmail);
-	$message->setTo($email);
-        
-	Yii::app()->mail->send($message);
+        return $this->notifications->removeNotifications($userId);
     }
 }

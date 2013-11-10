@@ -232,4 +232,3 @@ class ERememberFiltersBehavior extends CActiveRecordBehavior {
     }
 
 }
-?>

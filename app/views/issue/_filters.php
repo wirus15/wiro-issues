@@ -3,7 +3,7 @@
         'dataClear' => 'assignedTo,authorId,watchedScope',
         'model' => $model,
         'items' => array(
-            array('label' => 'All', 'default' => true),
+            array('label' => 'All', 'default'=>true),
             array('label' => 'Watched', 'filter' => 'watchedScope', 'value' => 1),
             array('label' => 'Assigned to me', 'filter' => 'assignedTo', 'value' => Yii::app()->user->id),
             array('label' => 'Created by me', 'filter' => 'authorId', 'value' => Yii::app()->user->id),

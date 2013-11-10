@@ -47,7 +47,6 @@ class IssueController extends wiro\base\Controller
                 'class' => 'wiro\actions\DeleteAction',
                 'accessCheck' => function($model) { return $model->canEdit; },
             ),
-            'index' => 'wiro\actions\IndexAction',
             'view' => array(
                 'class' => 'wiro\actions\ViewAction',
                 'beforeRender' => function($model) {

@@ -36,3 +36,6 @@ index
 # composer
 /app/lib/vendor
 composer.lock
+
+# upload
+/www/upload/*

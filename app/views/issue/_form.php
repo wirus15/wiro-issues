@@ -16,7 +16,16 @@ use wiro\modules\users\models\User;
 
         <fieldset>
             <div class="row-fluid">
-                <?= $form->textFieldRow($model, 'title', array('class'=>'span8')); ?>
+                <div class="span8">
+                    <?= $form->textFieldRow($model, 'title', array('class'=>'input-block-level')); ?>
+                    <?= $form->redactorRow($model, 'description', array(
+                        'options'=>array(
+                            'clipboardUploadUrl' => $this->createUrl('/site/upload', array('clipboard'=>true)),
+                            'imageUpload' => $this->createUrl('/site/upload'),
+                        ),
+                    )); ?>
+                    <br/>
+                </div>
             </div>
             <div class="row-fluid">
                 <div class="span3">
@@ -30,7 +39,6 @@ use wiro\modules\users\models\User;
             </div>
         </fieldset>
 	
-	<?= $form->redactorRow($model, 'description'); ?>
         <?= $form->dropDownListRow($model, 'assignedTo', User::model()->listModels('username'), array('empty'=>'')); ?>
 
 	<?= TbHtml::formActions(array(
