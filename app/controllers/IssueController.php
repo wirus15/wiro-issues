@@ -41,17 +41,11 @@ class IssueController extends wiro\base\Controller
             ),
             'update' => array(
                 'class' => 'wiro\actions\UpdateAction',
-                'beforePostAssignment' => function($model) {
-                    if($model->authorId !== Yii::app()->user->id)
-                        throw new CHttpException(403, 'You cannot edit this issue.');
-                },
+                'accessCheck' => function($model) { return $model->canEdit; },
             ),
             'delete' => array(
                 'class' => 'wiro\actions\DeleteAction',
-                'beforeDelete' => function($model) {
-                    if($model->authorId !== Yii::app()->user->id)
-                        throw new CHttpException(403, 'You cannot delete this issue.');
-                },
+                'accessCheck' => function($model) { return $model->canEdit; },
             ),
             'index' => 'wiro\actions\IndexAction',
             'view' => array(

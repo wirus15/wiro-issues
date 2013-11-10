@@ -1,5 +1,4 @@
-<?php $canEdit = $activity->userId === Yii::app()->user->id; ?>
-<?php if($canEdit): ?>
+<?php if($activity->canEdit): ?>
     <span class="options">
         <?= TbHtml::link(TbHtml::icon('pencil'), '#', array(
             'title' => 'Update', 
@@ -17,7 +16,7 @@
 User <strong><?= $activity->user->username; ?></strong> wrote a new comment on issue
 <?= TbHtml::link("#{$activity->issueId}: {$activity->issue->title}", array('/issue/view', 'id' => $activity->issueId)); ?>:
 
-<?php if($canEdit) {
+<?php if($activity->canEdit) {
     $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         'type' => TbHtml::FORM_LAYOUT_VERTICAL,
         'action' => array('/activity/update', 'id'=>$activity->activityId),
@@ -28,7 +27,7 @@ User <strong><?= $activity->user->username; ?></strong> wrote a new comment on i
 
 <blockquote><?= $activity->activityData; ?></blockquote>
 
-<?php if($canEdit): ?>
+<?php if($activity->canEdit): ?>
     <div class="edit-actions">
         <?= TbHtml::submitButton('Save', array('color'=>'primary', 'size'=>'mini')); ?>
         <?= TbHtml::button('Cancel', array('size'=>'mini', 'class'=>'cancel')); ?>

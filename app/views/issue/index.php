@@ -109,10 +109,10 @@ $this->breadcrumbs = array('Issues');
                 'template' => '{view} {update} {delete}',
                 'buttons' => array(
                     'update' => array(
-                        'visible' => '$data->authorId===Yii::app()->user->id',
+                        'visible' => '$data->canEdit',
                     ),
                     'delete' => array(
-                        'visible' => '$data->authorId===Yii::app()->user->id',
+                        'visible' => '$data->canEdit',
                     ),
                 ),
             ),

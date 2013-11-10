@@ -21,20 +21,14 @@ class ActivityController extends wiro\base\Controller
             'index' => 'wiro\actions\IndexAction',
             'update' => array(
                 'class' => 'wiro\actions\UpdateAction',
-                'beforePostAssignment' => function($model) {
-                    if($model->userId != Yii::app()->user->id)
-                        throw new CHttpException('Cannot update this activity.');
-                },
+                'accessCheck' => function($model) { return $model->canEdit; },
                 'redirectUrl' => function($model) {
                     return array('/issue/view', 'id'=>$model->issueId);
                 },
             ),
             'delete' => array(
                 'class' => 'wiro\actions\DeleteAction',
-                'beforeDelete' => function($model) {
-                    if($model->userId != Yii::app()->user->id)
-                        throw new CHttpException('Cannot delete this activity.');
-                },
+                'accessCheck' => function($model) { return $model->canEdit; },
                 'redirectUrl' => function($model) {
                     return array('/issue/view', 'id'=>$model->issueId);
                 },

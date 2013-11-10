@@ -199,4 +199,10 @@ class Issue extends wiro\base\ActiveRecord
     {
         return parent::model($className);
     }
+    
+    public function getCanEdit($userId = null)
+    {
+        $userId = $userId ?: Yii::app()->user->id;
+        return Yii::app()->user->checkAccess('admin') || $this->authorId===$userId;
+    }
 }
