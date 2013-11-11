@@ -38,7 +38,7 @@ class Attachment extends wiro\base\ActiveRecord
     public function rules()
     {
         return array(
-            array('file', 'file', 'maxSize'=>10485760, 'tooLarge'=>'Uploaded files cannot be larger than 10 MB.'),
+            array('file', 'file', 'maxSize'=>10485760),
         );
     }
 
