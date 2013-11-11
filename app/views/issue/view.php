@@ -51,10 +51,10 @@ $this->breadcrumbs=array(
     <?= TbHtml::linkButton('Issue list', array('url' => array('index'), 'icon' => 'tasks')); ?>
     </p>
     
+    <div id="issue-details">
     <?php $this->widget('bootstrap.widgets.TbDetailView', array(
 	'data'=>$model,
-        'id' => 'issue-details',
-	'attributes'=>array(
+        'attributes'=>array(
 		'issueId',
 		'author.username:text:Author',
 		'category.categoryName:text:Category',
@@ -73,7 +73,12 @@ $this->breadcrumbs=array(
 	),
     )); ?>
     
+    <?php $this->renderPartial('_attachments', array(
+        'issue' => $model,
+    )); ?>
     
+    </div>
+        
     <?php 
     $activity = new Activity('search');
     $activity->issueId = $model->issueId;

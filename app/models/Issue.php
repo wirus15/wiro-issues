@@ -19,6 +19,7 @@
  * @property User $assignee
  * @property Activity[] $activities
  * @property Watch[] $watches 
+ * @property Attachment[] $attachments
  */
 class Issue extends wiro\base\ActiveRecord
 {
@@ -77,6 +78,7 @@ class Issue extends wiro\base\ActiveRecord
             'assignee' => array(self::BELONGS_TO, 'wiro\modules\users\models\User', 'assignedTo'),
             'activities' => array(self::HAS_MANY, 'Activity', 'issueId'),
             'watches' => array(self::HAS_MANY, 'Watch', 'issueId'),
+            'attachments' => array(self::HAS_MANY, 'Attachment', 'issueId'),
         );
     }
 

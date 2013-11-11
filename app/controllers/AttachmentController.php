@@ -34,11 +34,35 @@ class AttachmentController extends wiro\base\Controller
     
     public function actionCreate($id)
     {
+        $model = new Attachment();
+        $model->issueId = $id;
+        $model->userId = Yii::app()->user->id;
+        $model->file = Yii::app()->upload->getUploadedFile($model, 'file');
         
+        if($model->validate()) {
+            $model->fileName = $model->file->name;
+            $model->filePath = Yii::app()->upload->saveUploadedFile($model->file);
+            if($model->save())
+                $this->redirect(array('/issue/view', 'id'=>$id));
+        }
+            
+        Yii::app()->user->setFlash('error', $model->getError('file'));
     }
     
     public function actionDelete($id)
     {
+        $model = $this->loadModel($id);
+        if(!$model->canEdit)
+            throw new CHttpException(403, 'You cannot delete this attachment.');
         
+        $model->delete();
+        $this->redirect(array('/issue/view', 'id'=>$model->issueId));
+    }
+    
+    public function actionDownload($id)
+    {
+        $model = $this->loadModel($id);
+        $content = file_get_contents(Yii::app()->upload->uploadPath.'/'.$model->filePath);
+        Yii::app()->request->sendFile($model->fileName, $content);
     }
 }

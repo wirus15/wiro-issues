@@ -267,7 +267,7 @@ i[class^="icon-"] {
 }
 
 @media all and (min-width: 1200px) {
-    #issue-view table.detail-view {
+    #issue-details {
         float: left;
         width: 50%;
     }
@@ -344,3 +344,20 @@ i[class^="icon-"] {
     padding: 0px 20px;
 }
 
+#attachment-list li {
+    line-height: 26px;
+    padding: 2px 8px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    vertical-align: middle;
+}
+
+#attachment-list li:hover {
+    background-color: #ededed;
+}
+
+#attachment-list li a.btn {
+    float: right;
+    margin-top: 2px;
+}
