@@ -42,11 +42,13 @@ class AttachmentController extends wiro\base\Controller
         if($model->validate()) {
             $model->fileName = $model->file->name;
             $model->filePath = Yii::app()->upload->saveUploadedFile($model->file);
-            if($model->save())
-                $this->redirect(array('/issue/view', 'id'=>$id));
+            $model->save();
         }
-            
-        Yii::app()->user->setFlash('error', $model->getError('file'));
+        
+        if($model->hasErrors('file'))
+            Yii::app()->user->setFlash('error', $model->getError('file'));
+        
+        $this->redirect(array('/issue/view', 'id'=>$id));
     }
     
     public function actionDelete($id)
