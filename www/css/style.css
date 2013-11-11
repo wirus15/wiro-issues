@@ -116,6 +116,7 @@ img.image-select {
 .grid-view .filters select {
     min-height: 30px;
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
 }
 
 .grid-view table.items th:hover a:after {
