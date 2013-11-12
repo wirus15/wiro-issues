@@ -1,5 +1,7 @@
 <?php
 
+use wiro\components\mail\YiiMailMessage;
+
 /**
  * @author Maciej Krawczyk <wirus15@gmail.com>
  */
